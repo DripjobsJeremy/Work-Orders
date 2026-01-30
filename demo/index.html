@@ -1630,6 +1630,38 @@
             font-weight: 600;
         }
 
+        .demo-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .demo-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .demo-btn svg {
+            flex-shrink: 0;
+        }
+
         /* ============================================================
            Responsive
            ============================================================ */
@@ -2859,7 +2891,18 @@
 <body>
     <!-- Demo Banner -->
     <div class="demo-banner">
-        <strong>DEMO MODE</strong> - This is a standalone test version. Drag-and-drop and UI interactions work without a backend.
+        <div class="demo-banner-content">
+            <span><strong>DEMO MODE</strong> - This is a standalone test version. Drag-and-drop and UI interactions work without a backend.</span>
+            <button type="button" class="demo-btn" id="wo-add-change-order-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                Simulate Change Order
+            </button>
+        </div>
     </div>
 
     <div class="wo-edit-page" id="wo-edit-page">
@@ -3020,16 +3063,6 @@
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                     </svg>
                     Edit Work Order
-                </button>
-
-                <button type="button" class="wo-btn wo-btn-warning" id="wo-add-change-order-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="12" y1="18" x2="12" y2="12"></line>
-                        <line x1="9" y1="15" x2="15" y2="15"></line>
-                    </svg>
-                    Add Change Order
                 </button>
 
                 <button type="button" class="wo-btn wo-btn-success" id="wo-save-mode-btn" style="display: none;">
@@ -4202,7 +4235,7 @@
                             <line x1="12" y1="17" x2="12.01" y2="17"></line>
                         </svg>
                         <div>
-                            <strong>Important:</strong> Removed items will remain visible on the Work Order with a strikethrough to inform crews of the change. The invoice will be automatically recalculated when the customer accepts the Change Order.
+                            <strong>Important:</strong> Once accepted, removed items will remain visible on the Work Order with a strikethrough to inform crews of the change. The invoice will be automatically recalculated when the customer accepts the Change Order.
                         </div>
                     </div>
                 </div>
@@ -5023,6 +5056,7 @@
 
             // Save Change Order
             saveChangeOrder: function() {
+                var self = this;
                 var activeTab = $('.wo-co-tab.is-active').data('tab');
 
                 if (activeTab === 'add') {
@@ -5034,19 +5068,61 @@
                     this.hideChangeOrderModal();
                     this.showToast('Change Order item added: ' + itemName, 'success');
                 } else {
-                    // Remove items
-                    var selectedItems = [];
+                    // Remove items - get selected item IDs
+                    var selectedItemIds = [];
+                    var selectedItemNames = [];
                     $('.wo-co-remove-item input[type="checkbox"]:checked').each(function() {
-                        selectedItems.push($(this).closest('.wo-co-remove-item').find('.wo-co-remove-item-name').text());
+                        var itemId = $(this).data('item-id');
+                        var itemName = $(this).closest('.wo-co-remove-item').find('.wo-co-remove-item-name').text();
+                        selectedItemIds.push(itemId);
+                        selectedItemNames.push(itemName);
                     });
 
-                    if (selectedItems.length === 0) {
+                    if (selectedItemIds.length === 0) {
                         this.showToast('Please select items to remove', 'error');
                         return;
                     }
 
+                    // Apply CO Removed status to selected items on Work Order
+                    var today = new Date();
+                    var dateStr = (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                                  today.getDate().toString().padStart(2, '0') + '/' +
+                                  today.getFullYear();
+                    var coNumber = '8' + Math.floor(Math.random() * 9000 + 1000); // Random CO number
+
+                    selectedItemIds.forEach(function(itemId) {
+                        var $row = $('.wo-line-item-row[data-line-item-id="' + itemId + '"]');
+                        if ($row.length && !$row.hasClass('wo-co-removed')) {
+                            // Add the CO Removed class
+                            $row.addClass('wo-co-removed');
+                            $row.attr('data-co-removed', coNumber);
+                            $row.attr('data-co-removed-date', dateStr);
+
+                            // Add the CO Removed badge if not already present
+                            var $itemName = $row.find('.wo-item-name');
+                            if ($itemName.find('.wo-co-removed-badge').length === 0) {
+                                var badgeHtml = '<span class="wo-co-removed-badge" title="Removed via Change Order #' + coNumber + ' on ' + dateStr + '">' +
+                                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                    '<circle cx="12" cy="12" r="10"></circle>' +
+                                    '<line x1="15" y1="9" x2="9" y2="15"></line>' +
+                                    '<line x1="9" y1="9" x2="15" y2="15"></line>' +
+                                    '</svg>' +
+                                    'CO Removed</span>';
+                                $itemName.append(badgeHtml);
+                            }
+
+                            // Also mark it as disabled in the modal for future use
+                            var $modalCheckbox = $('.wo-co-remove-item input[data-item-id="' + itemId + '"]');
+                            $modalCheckbox.prop('disabled', true).prop('checked', false);
+                            $modalCheckbox.closest('.wo-co-remove-item').removeClass('is-selected');
+                            $modalCheckbox.closest('.wo-co-remove-item').find('.wo-co-remove-item-name')
+                                .addClass('wo-co-already-removed')
+                                .text($modalCheckbox.closest('.wo-co-remove-item').find('.wo-co-remove-item-name').text() + ' (Already Removed)');
+                        }
+                    });
+
                     this.hideChangeOrderModal();
-                    this.showToast('Change Order created to remove ' + selectedItems.length + ' item(s)', 'success');
+                    this.showToast('Change Order #' + coNumber + ' applied - ' + selectedItemIds.length + ' item(s) removed', 'success');
                 }
             },
 
