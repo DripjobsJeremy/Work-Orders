@@ -1,0 +1,338 @@
+@model DripJobs.Models.WorkOrder.WorkOrderEditViewModel
+@{
+    ViewBag.Title = "Edit Work Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* Required CSS *@
+@section Styles {
+    <link href="~/Content/css/workorder-edit.css" rel="stylesheet" />
+}
+
+<div class="wo-edit-page" id="wo-edit-page">
+    <div class="wo-container">
+
+        @* Header Section *@
+        <div class="wo-header">
+            <div class="wo-header-top">
+                <div>
+                    <h1 class="wo-title">Work Order #@Model.ProposalNumber</h1>
+                    <p class="wo-subtitle">@Model.JobName &bull; @Model.CustomerName</p>
+                </div>
+                <div>
+                    @if (Model.ProposalState == "Accepted")
+                    {
+                        <span class="wo-badge wo-badge-success">Accepted</span>
+                    }
+                    else if (Model.ProposalState == "Sent")
+                    {
+                        <span class="wo-badge wo-badge-info">Sent</span>
+                    }
+                    else
+                    {
+                        <span class="wo-badge wo-badge-warning">@Model.ProposalState</span>
+                    }
+                </div>
+            </div>
+
+            @* Warning Banner *@
+            <div class="wo-warning-banner">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Changes to this Work Order do not modify the original Proposal or Job Costing records.</span>
+            </div>
+        </div>
+
+        @* Edit Mode Controls *@
+        <div class="wo-edit-controls">
+            <button type="button" class="wo-btn wo-btn-primary" id="wo-edit-mode-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Edit Work Order
+            </button>
+
+            <button type="button" class="wo-btn wo-btn-success" id="wo-save-mode-btn" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Save Changes
+            </button>
+
+            <button type="button" class="wo-btn wo-btn-secondary" id="wo-cancel-mode-btn" style="display: none;">
+                Cancel
+            </button>
+        </div>
+
+        @* Areas/Sections Container (Sortable) *@
+        <div class="wo-areas-container" id="wo-areas-container">
+            @foreach (var area in Model.Areas.OrderBy(a => a.SortOrder))
+            {
+                <div class="wo-area-card" data-area-id="@area.AreaId">
+                    @* Area Header *@
+                    <div class="wo-area-header">
+                        @* Drag Handle for Area (visible in edit mode) *@
+                        <div class="wo-area-drag-handle" title="Drag to reorder section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="9" cy="6" r="1.5"></circle>
+                                <circle cx="15" cy="6" r="1.5"></circle>
+                                <circle cx="9" cy="12" r="1.5"></circle>
+                                <circle cx="15" cy="12" r="1.5"></circle>
+                                <circle cx="9" cy="18" r="1.5"></circle>
+                                <circle cx="15" cy="18" r="1.5"></circle>
+                            </svg>
+                        </div>
+
+                        <div class="wo-area-title-wrapper">
+                            <h3 class="wo-area-title">@area.DisplayName</h3>
+                            <input type="text"
+                                   class="wo-area-title-input"
+                                   value="@area.DisplayName"
+                                   data-original-value="@area.DisplayName"
+                                   placeholder="Enter area name" />
+                        </div>
+
+                        <span class="wo-area-summary">
+                            @area.ActiveLineItemCount items &bull;
+                            <span class="wo-area-total">@area.TotalHours.ToString("F2")</span> hrs
+                        </span>
+
+                        <button type="button" class="wo-area-collapse-btn" title="Collapse/Expand">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    @* Area Body *@
+                    <div class="wo-area-body">
+                        @* Line Items Table *@
+                        <table class="wo-line-items-table">
+                            <thead>
+                                <tr>
+                                    <th class="wo-col-drag"></th>
+                                    <th class="wo-col-item">Item</th>
+                                    <th class="wo-col-prep">Prep Hrs</th>
+                                    <th class="wo-col-working">Working Hrs</th>
+                                    <th class="wo-col-total">Total Hrs</th>
+                                    <th class="wo-col-unit">Unit</th>
+                                    <th class="wo-col-coats">Coats</th>
+                                    <th class="wo-col-actions"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="wo-line-items-tbody" data-area-id="@area.AreaId">
+                                @foreach (var item in area.LineItems.Where(li => !li.IsDeleted).OrderBy(li => li.SortOrder))
+                                {
+                                    <tr class="wo-line-item-row" data-line-item-id="@item.LineItemId">
+                                        @* Drag Handle *@
+                                        <td class="wo-col-drag">
+                                            <div class="wo-drag-handle" title="Drag to reorder">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                    <circle cx="9" cy="6" r="1.5"></circle>
+                                                    <circle cx="15" cy="6" r="1.5"></circle>
+                                                    <circle cx="9" cy="12" r="1.5"></circle>
+                                                    <circle cx="15" cy="12" r="1.5"></circle>
+                                                    <circle cx="9" cy="18" r="1.5"></circle>
+                                                    <circle cx="15" cy="18" r="1.5"></circle>
+                                                </svg>
+                                            </div>
+                                        </td>
+
+                                        @* Item Info *@
+                                        <td class="wo-col-item">
+                                            <div class="wo-item-name">@item.ItemName</div>
+                                            <div class="wo-item-details">
+                                                @if (!string.IsNullOrEmpty(item.ItemType))
+                                                {
+                                                    <span class="wo-item-type-badge">@item.ItemType</span>
+                                                }
+                                                @item.ProductDetails
+                                            </div>
+                                        </td>
+
+                                        @* Prep Hours *@
+                                        <td class="wo-col-prep wo-editable-field" data-label="Prep Hrs">
+                                            <span class="wo-field-value" data-field="PrepHrs">@item.PrepHrs.ToString("F2")</span>
+                                            <input type="number"
+                                                   step="0.25"
+                                                   min="0"
+                                                   max="24"
+                                                   class="wo-field-input @(item.IsModified && item.OriginalPrepHrs.HasValue && item.OriginalPrepHrs != item.PrepHrs ? "is-modified" : "")"
+                                                   data-field="PrepHrs"
+                                                   data-original-value="@item.PrepHrs"
+                                                   value="@item.PrepHrs" />
+                                        </td>
+
+                                        @* Working Hours *@
+                                        <td class="wo-col-working wo-editable-field" data-label="Working Hrs">
+                                            <span class="wo-field-value" data-field="WorkingHrs">@item.WorkingHrs.ToString("F2")</span>
+                                            <input type="number"
+                                                   step="0.25"
+                                                   min="0"
+                                                   max="24"
+                                                   class="wo-field-input @(item.IsModified && item.OriginalWorkingHrs.HasValue && item.OriginalWorkingHrs != item.WorkingHrs ? "is-modified" : "")"
+                                                   data-field="WorkingHrs"
+                                                   data-original-value="@item.WorkingHrs"
+                                                   value="@item.WorkingHrs" />
+                                        </td>
+
+                                        @* Total Hours (calculated, read-only) *@
+                                        <td class="wo-col-total wo-editable-field" data-label="Total Hrs">
+                                            <span class="wo-total-hrs">@item.TotalHrs.ToString("F2")</span>
+                                        </td>
+
+                                        @* Unit *@
+                                        <td class="wo-col-unit wo-editable-field" data-label="Unit">
+                                            <span class="wo-field-value" data-field="Unit">@item.Unit</span>
+                                            <input type="text"
+                                                   maxlength="50"
+                                                   class="wo-field-input @(item.IsModified && item.OriginalUnit != null && item.OriginalUnit != item.Unit ? "is-modified" : "")"
+                                                   data-field="Unit"
+                                                   data-original-value="@item.Unit"
+                                                   value="@item.Unit" />
+                                        </td>
+
+                                        @* Coats *@
+                                        <td class="wo-col-coats wo-editable-field" data-label="Coats">
+                                            <span class="wo-field-value" data-field="Coats">@item.Coats</span>
+                                            <input type="number"
+                                                   step="1"
+                                                   min="0"
+                                                   max="100"
+                                                   class="wo-field-input @(item.IsModified && item.OriginalCoats.HasValue && item.OriginalCoats != item.Coats ? "is-modified" : "")"
+                                                   data-field="Coats"
+                                                   data-original-value="@item.Coats"
+                                                   value="@item.Coats" />
+                                        </td>
+
+                                        @* Delete Button *@
+                                        <td class="wo-col-actions">
+                                            <button type="button" class="wo-delete-btn" title="Delete item">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        @* Area Totals *@
+                        <div class="wo-area-totals">
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Prep Hours</div>
+                                <div class="wo-area-total-value wo-area-prep-total">@area.TotalPrepHours.ToString("F2")</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Working Hours</div>
+                                <div class="wo-area-total-value wo-area-working-total">@area.TotalWorkingHours.ToString("F2")</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Total Hours</div>
+                                <div class="wo-area-total-value is-primary wo-area-total">@area.TotalHours.ToString("F2")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* Grand Totals *@
+        <div class="wo-grand-totals">
+            <h4 class="wo-grand-totals-title">Work Order Totals</h4>
+            <div class="wo-grand-totals-grid">
+                <div class="wo-grand-total-item">
+                    <div class="wo-grand-total-label">Total Prep Hours</div>
+                    <div class="wo-grand-total-value" id="wo-grand-prep-hours">@Model.TotalPrepHours.ToString("F2")</div>
+                </div>
+                <div class="wo-grand-total-item">
+                    <div class="wo-grand-total-label">Total Working Hours</div>
+                    <div class="wo-grand-total-value" id="wo-grand-working-hours">@Model.TotalWorkingHours.ToString("F2")</div>
+                </div>
+                <div class="wo-grand-total-item is-primary">
+                    <div class="wo-grand-total-label">Grand Total Hours</div>
+                    <div class="wo-grand-total-value" id="wo-grand-total-hours">@Model.GrandTotalHours.ToString("F2")</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @* Anti-Forgery Token (for AJAX requests) *@
+    @Html.AntiForgeryToken()
+
+    @* Fixed Bottom Bar *@
+    <div class="wo-bottom-bar">
+        <div class="wo-bottom-bar-content">
+            <div class="wo-unsaved-indicator">
+                <span class="wo-unsaved-dot"></span>
+                <span>Unsaved changes</span>
+            </div>
+            <div class="wo-bottom-actions">
+                <a href="@Url.Action("Details", "WorkOrder", new { id = Model.WorkOrderId })" class="wo-btn wo-btn-secondary">
+                    Back to Work Order
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @* Toast Notification *@
+    <div class="wo-toast" id="wo-toast"></div>
+
+    @* Delete Confirmation Modal *@
+    <div class="wo-modal-backdrop" id="wo-delete-modal">
+        <div class="wo-modal">
+            <h4 class="wo-modal-title">Delete Line Item?</h4>
+            <p class="wo-modal-message">
+                Are you sure you want to delete <strong id="wo-delete-item-name"></strong>?
+                This action cannot be undone.
+            </p>
+            <div class="wo-modal-actions">
+                <button type="button" class="wo-btn wo-btn-secondary" id="wo-delete-cancel-btn">Cancel</button>
+                <button type="button" class="wo-btn wo-btn-danger" id="wo-delete-confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Required Scripts *@
+@section Scripts {
+    @* jQuery UI for Sortable (drag-and-drop) *@
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    @* Touch support for mobile drag-and-drop *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+    @* Work Order Editor Script *@
+    <script src="~/Scripts/workorder-edit.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Get antiforgery token from the hidden field
+            var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
+            // Initialize the Work Order Editor
+            $('#wo-edit-page').workOrderEditor({
+                workOrderId: @Model.WorkOrderId,
+                antiForgeryToken: antiForgeryToken,
+                apiEndpoints: {
+                    saveChanges: '@Url.Action("SaveChanges", "WorkOrder")',
+                    reorderLineItems: '@Url.Action("ReorderLineItems", "WorkOrder")',
+                    reorderAreas: '@Url.Action("ReorderAreas", "WorkOrder")',
+                    updateLineItem: '@Url.Action("UpdateLineItem", "WorkOrder")',
+                    deleteLineItem: '@Url.Action("DeleteLineItem", "WorkOrder")',
+                    updateAreaName: '@Url.Action("UpdateAreaName", "WorkOrder")',
+                    getTotals: '@Url.Action("GetTotals", "WorkOrder")'
+                }
+            });
+        });
+    </script>
+}

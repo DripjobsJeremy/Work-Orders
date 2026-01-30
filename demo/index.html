@@ -1,0 +1,4308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Order Editor - Demo</title>
+
+    <!-- Bootstrap 4 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <!-- Custom Styles (inline for demo) -->
+    <style>
+        /* ============================================================
+           CSS Variables
+           ============================================================ */
+        :root {
+            --dj-primary: #7C3AED;
+            --dj-primary-dark: #6D28D9;
+            --dj-primary-light: #A78BFA;
+            --dj-primary-bg: #F3F0FF;
+            --dj-primary-border: #DDD6FE;
+
+            --dj-success: #10B981;
+            --dj-success-bg: #D1FAE5;
+            --dj-success-border: #6EE7B7;
+
+            --dj-danger: #EF4444;
+            --dj-danger-bg: #FEE2E2;
+            --dj-danger-border: #FCA5A5;
+
+            --dj-warning: #F59E0B;
+            --dj-warning-bg: #FEF3C7;
+            --dj-warning-border: #FCD34D;
+
+            --dj-gray-50: #F9FAFB;
+            --dj-gray-100: #F3F4F6;
+            --dj-gray-200: #E5E7EB;
+            --dj-gray-300: #D1D5DB;
+            --dj-gray-400: #9CA3AF;
+            --dj-gray-500: #6B7280;
+            --dj-gray-600: #4B5563;
+            --dj-gray-700: #374151;
+            --dj-gray-800: #1F2937;
+            --dj-gray-900: #111827;
+
+            --dj-touch-target: 48px;
+            --dj-border-radius: 6px;
+            --dj-transition: all 0.15s ease-in-out;
+        }
+
+        /* ============================================================
+           Page Container
+           ============================================================ */
+        .wo-edit-page {
+            background-color: var(--dj-gray-50);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .wo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .wo-container {
+                padding: 24px;
+            }
+        }
+
+        /* ============================================================
+           Header Section
+           ============================================================ */
+        .wo-header {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            padding: 16px;
+        }
+
+        .wo-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .wo-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0;
+        }
+
+        .wo-subtitle {
+            font-size: 14px;
+            color: var(--dj-gray-500);
+            margin: 4px 0 0 0;
+        }
+
+        .wo-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .wo-badge-success {
+            background-color: var(--dj-success-bg);
+            color: #065F46;
+        }
+
+        /* Warning Banner */
+        .wo-warning-banner {
+            background-color: var(--dj-warning-bg);
+            border: 1px solid var(--dj-warning-border);
+            border-radius: var(--dj-border-radius);
+            padding: 12px 16px;
+            display: none; /* Hidden by default */
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #92400E;
+        }
+
+        .wo-edit-mode .wo-warning-banner {
+            display: flex; /* Show in edit mode */
+        }
+
+        .wo-warning-banner svg {
+            flex-shrink: 0;
+            color: var(--dj-warning);
+        }
+
+        /* ============================================================
+           Edit Mode Controls
+           ============================================================ */
+        .wo-edit-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .wo-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            min-height: var(--dj-touch-target);
+            border-radius: var(--dj-border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--dj-transition);
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+
+        .wo-btn-primary {
+            background-color: var(--dj-primary);
+            color: white;
+            border-color: var(--dj-primary);
+        }
+
+        .wo-btn-primary:hover {
+            background-color: var(--dj-primary-dark);
+            border-color: var(--dj-primary-dark);
+            color: white;
+        }
+
+        .wo-btn-secondary {
+            background-color: white;
+            color: var(--dj-gray-700);
+            border-color: var(--dj-gray-300);
+        }
+
+        .wo-btn-secondary:hover {
+            background-color: var(--dj-gray-50);
+            border-color: var(--dj-gray-400);
+            color: var(--dj-gray-800);
+        }
+
+        .wo-btn-success {
+            background-color: var(--dj-success);
+            color: white;
+            border-color: var(--dj-success);
+        }
+
+        .wo-btn-success:hover {
+            background-color: #059669;
+            border-color: #059669;
+            color: white;
+        }
+
+        .wo-btn-danger {
+            background-color: var(--dj-danger);
+            color: white;
+            border-color: var(--dj-danger);
+        }
+
+        .wo-btn-danger:hover {
+            background-color: #DC2626;
+            border-color: #DC2626;
+        }
+
+        /* ============================================================
+           Area/Section Cards
+           ============================================================ */
+        .wo-areas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .wo-area-card {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: var(--dj-transition);
+        }
+
+        .wo-area-card.ui-sortable-helper {
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+            transform: rotate(1deg);
+        }
+
+        .wo-area-card.ui-sortable-placeholder {
+            background-color: var(--dj-primary-bg);
+            border: 2px dashed var(--dj-primary);
+            visibility: visible !important;
+            min-height: 100px;
+            box-shadow: none;
+        }
+
+        /* Area Header */
+        .wo-area-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background-color: var(--dj-primary);
+            color: white;
+        }
+
+        .wo-area-drag-handle {
+            display: none;
+            width: 28px;
+            height: 28px;
+            cursor: grab;
+            color: rgba(255, 255, 255, 0.7);
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wo-area-drag-handle:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .wo-area-drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .wo-edit-mode .wo-area-drag-handle {
+            display: flex;
+        }
+
+        .wo-area-title-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-area-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .wo-area-title-input {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 6px 10px;
+            min-height: 36px;
+            width: 100%;
+            max-width: 300px;
+            display: none;
+        }
+
+        .wo-area-title-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .wo-area-title-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+
+        .wo-edit-mode .wo-area-title {
+            display: none;
+        }
+
+        .wo-edit-mode .wo-area-title-input {
+            display: block;
+        }
+
+        .wo-area-summary {
+            font-size: 13px;
+            opacity: 0.9;
+            white-space: nowrap;
+        }
+
+        /* Change Order Badge - shown on areas/items from change orders */
+        .wo-change-order-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            background-color: #10B981;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 12px;
+            white-space: nowrap;
+        }
+
+        .wo-change-order-badge svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Change order indicator for line items */
+        .wo-line-item-row.wo-change-order-item {
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.08), transparent);
+        }
+
+        .wo-line-item-row.wo-change-order-item .wo-item-name::after {
+            content: 'CO';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            padding: 1px 5px;
+            background-color: #10B981;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+
+        .wo-area-collapse-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-area-collapse-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Area Body */
+        .wo-area-body {
+            padding: 0;
+        }
+
+        .wo-area-body.collapsed {
+            display: none;
+        }
+
+        /* ============================================================
+           Line Items Table
+           ============================================================ */
+        .wo-line-items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .wo-line-items-table thead tr {
+            background-color: var(--dj-gray-100);
+        }
+
+        .wo-line-items-table th {
+            background-color: var(--dj-gray-100);
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--dj-gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--dj-gray-200);
+            white-space: nowrap;
+        }
+
+        .wo-line-items-table th.wo-col-drag {
+            width: 48px;
+            min-width: 48px;
+            padding: 14px 8px 14px 16px;
+        }
+
+        .wo-line-items-table th.wo-col-item {
+            width: auto;
+            padding-left: 8px;
+        }
+
+        .wo-line-items-table th.wo-col-prep,
+        .wo-line-items-table th.wo-col-working,
+        .wo-line-items-table th.wo-col-total {
+            width: 100px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .wo-line-items-table th.wo-col-unit {
+            width: 90px;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .wo-line-items-table th.wo-col-coats {
+            width: 70px;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .wo-line-items-table th.wo-col-actions {
+            width: 90px;
+            min-width: 90px;
+            padding-right: 16px;
+        }
+
+        /* Line Item Rows */
+        .wo-line-item-row {
+            border-bottom: 1px solid var(--dj-gray-200);
+            transition: var(--dj-transition);
+        }
+
+        .wo-line-item-row:hover {
+            background-color: var(--dj-gray-50);
+        }
+
+        .wo-line-item-row.is-deleted {
+            display: none;
+        }
+
+        .wo-line-item-row.ui-sortable-helper {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+            display: table;
+            width: 100%;
+        }
+
+        .wo-line-item-row.ui-sortable-placeholder {
+            background-color: var(--dj-primary-bg);
+            border: 2px dashed var(--dj-primary);
+            visibility: visible !important;
+        }
+
+        .wo-line-item-row.ui-sortable-placeholder td {
+            visibility: hidden;
+        }
+
+        .wo-line-item-row td {
+            padding: 10px 12px;
+            vertical-align: middle;
+            font-size: 14px;
+            color: var(--dj-gray-700);
+        }
+
+        .wo-line-item-row td.wo-col-drag {
+            padding: 12px 8px 12px 16px;
+        }
+
+        .wo-line-item-row td.wo-col-item {
+            padding-left: 8px;
+        }
+
+        .wo-line-item-row td.wo-col-prep,
+        .wo-line-item-row td.wo-col-working,
+        .wo-line-item-row td.wo-col-total {
+            text-align: center;
+        }
+
+        .wo-line-item-row td.wo-col-unit {
+            text-align: center;
+        }
+
+        .wo-line-item-row td.wo-col-coats {
+            text-align: center;
+        }
+
+        .wo-line-item-row td.wo-col-actions {
+            text-align: right;
+            padding-right: 16px;
+        }
+
+        /* Drag Handle */
+        .wo-drag-handle {
+            display: none;
+            width: 28px;
+            height: 28px;
+            color: var(--dj-primary);
+            cursor: grab;
+            background-color: var(--dj-primary-bg);
+            border-radius: 4px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wo-drag-handle:hover {
+            background-color: var(--dj-primary-border);
+        }
+
+        .wo-drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .wo-edit-mode .wo-drag-handle {
+            display: flex;
+        }
+
+        /* Item Info */
+        .wo-item-name {
+            font-weight: 500;
+            color: var(--dj-gray-800);
+            margin-bottom: 2px;
+        }
+
+        .wo-item-details {
+            font-size: 12px;
+            color: var(--dj-gray-500);
+        }
+
+        .wo-product-text {
+            color: var(--dj-gray-500);
+        }
+
+        .wo-item-type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background-color: var(--dj-gray-100);
+            border-radius: 10px;
+            font-size: 11px;
+            color: var(--dj-gray-600);
+            margin-right: 6px;
+        }
+
+        /* Rule 6: Package Badge */
+        .wo-package-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: linear-gradient(135deg, var(--dj-primary-light), #e8dcfa);
+            border: 1px solid var(--dj-primary);
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--dj-primary);
+            margin-right: 6px;
+        }
+
+        .wo-package-badge svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        /* Package Item Row */
+        .wo-package-item {
+            background: linear-gradient(to right, var(--dj-primary-light), transparent);
+        }
+
+        .wo-package-item:hover {
+            background: linear-gradient(to right, #e8dcfa, var(--dj-gray-50));
+        }
+
+        /* Package Group Header (optional - for visual grouping) */
+        .wo-package-header {
+            background: var(--dj-primary-light);
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dj-primary);
+            border-left: 3px solid var(--dj-primary);
+            margin-bottom: 0;
+        }
+
+        /* Editable Fields */
+        .wo-editable-field {
+            text-align: right;
+        }
+
+        .wo-field-value {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px 4px;
+            min-height: 40px;
+            line-height: 1.4;
+        }
+
+        .wo-field-number {
+            font-weight: 500;
+            color: var(--dj-gray-700);
+        }
+
+        .wo-field-unit {
+            font-size: 12px;
+            color: var(--dj-gray-500);
+            font-weight: 400;
+        }
+
+        /* Wrapper for input + unit suffix */
+        .wo-field-edit-wrapper {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .wo-edit-mode .wo-field-edit-wrapper {
+            display: flex;
+        }
+
+        /* In edit mode, hide the value display for editable fields (that have edit wrapper) */
+        /* Note: Hours (prep/working) and Coats are READ-ONLY - changes must come from proposal */
+        .wo-edit-mode .wo-col-unit .wo-field-value {
+            display: none;
+        }
+
+        /* Hours and Coats columns are always read-only */
+        .wo-col-prep .wo-field-edit-wrapper,
+        .wo-col-working .wo-field-edit-wrapper,
+        .wo-col-coats .wo-field-edit-wrapper {
+            display: none !important;
+        }
+
+        .wo-edit-mode .wo-col-prep .wo-field-value,
+        .wo-edit-mode .wo-col-working .wo-field-value,
+        .wo-edit-mode .wo-col-coats .wo-field-value {
+            display: flex !important;
+        }
+
+        /* Total Hrs column is never editable - always show value */
+        .wo-col-total .wo-field-value {
+            display: flex !important;
+        }
+
+        .wo-field-input {
+            width: 55px;
+            padding: 6px 6px;
+            min-height: 36px;
+            border: 1px solid var(--dj-gray-300);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--dj-gray-700);
+            background-color: white;
+        }
+
+        /* Remove spinner arrows from number inputs */
+        .wo-field-input[type="number"]::-webkit-inner-spin-button,
+        .wo-field-input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+        .wo-field-input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .wo-field-input:focus {
+            outline: none;
+            border-color: var(--dj-primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .wo-field-input.is-modified {
+            border-color: var(--dj-primary);
+            background-color: var(--dj-primary-bg);
+        }
+
+        .wo-edit-mode .wo-field-value {
+            display: none;
+        }
+
+        .wo-edit-mode .wo-field-input {
+            display: block;
+        }
+
+        /* Total Hours */
+        .wo-total-hrs {
+            font-weight: 600;
+            color: var(--dj-primary);
+        }
+
+        /* Read-only fields from proposal indicator */
+        .wo-edit-mode .wo-col-prep,
+        .wo-edit-mode .wo-col-working,
+        .wo-edit-mode .wo-col-coats {
+            position: relative;
+        }
+
+        .wo-edit-mode .wo-col-prep .wo-field-value,
+        .wo-edit-mode .wo-col-working .wo-field-value,
+        .wo-edit-mode .wo-col-coats .wo-field-value {
+            background-color: var(--dj-gray-100);
+            border-radius: 4px;
+            cursor: not-allowed;
+        }
+
+        /* Subtle lock indicator for read-only columns */
+        .wo-readonly-indicator {
+            display: none;
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 12px;
+            height: 12px;
+            color: var(--dj-gray-400);
+        }
+
+        .wo-edit-mode .wo-readonly-indicator {
+            display: block;
+        }
+
+        /* Delete Button */
+        .wo-delete-btn {
+            display: none;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            background-color: transparent;
+            border: 1px solid var(--dj-danger);
+            border-radius: 4px;
+            color: var(--dj-danger);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: var(--dj-transition);
+        }
+
+        .wo-delete-btn:hover {
+            background-color: var(--dj-danger);
+            color: white;
+        }
+
+        .wo-edit-mode .wo-delete-btn {
+            display: inline-flex;
+        }
+
+        /* Product Change Button */
+        .wo-product-change-btn {
+            display: none;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: var(--dj-radius-sm);
+            background-color: var(--dj-gray-100);
+            color: var(--dj-gray-600);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .wo-product-change-btn:hover {
+            background-color: var(--dj-primary);
+            color: white;
+        }
+
+        .wo-edit-mode .wo-product-change-btn {
+            display: inline-flex;
+        }
+
+        .wo-col-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        /* Product Changed Indicator */
+        .wo-product-changed .wo-product-text {
+            color: var(--dj-primary);
+            font-weight: 500;
+        }
+
+        .wo-product-changed .wo-product-text::after {
+            content: ' (changed)';
+            font-size: 10px;
+            background: var(--dj-primary-light);
+            color: var(--dj-primary);
+            padding: 1px 4px;
+            border-radius: var(--dj-radius-sm);
+            margin-left: 4px;
+        }
+
+        /* ============================================================
+           Area Totals
+           ============================================================ */
+        .wo-area-totals {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 24px;
+            padding: 12px 16px;
+            background-color: var(--dj-gray-50);
+            border-top: 1px solid var(--dj-gray-200);
+        }
+
+        .wo-area-total-item {
+            text-align: right;
+        }
+
+        .wo-area-total-label {
+            font-size: 11px;
+            color: var(--dj-gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .wo-area-total-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+        }
+
+        .wo-area-total-value.is-primary {
+            color: var(--dj-primary);
+        }
+
+        /* ============================================================
+           Grand Totals Card
+           ============================================================ */
+        .wo-grand-totals {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .wo-grand-totals-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0 0 16px 0;
+        }
+
+        .wo-grand-totals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .wo-grand-total-item {
+            text-align: center;
+            padding: 12px;
+            background-color: var(--dj-gray-50);
+            border-radius: var(--dj-border-radius);
+        }
+
+        .wo-grand-total-item.is-primary {
+            background-color: var(--dj-primary-bg);
+        }
+
+        .wo-grand-total-label {
+            font-size: 12px;
+            color: var(--dj-gray-500);
+            margin-bottom: 4px;
+        }
+
+        .wo-grand-total-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dj-gray-800);
+        }
+
+        .wo-grand-total-item.is-primary .wo-grand-total-value {
+            color: var(--dj-primary);
+        }
+
+        /* ============================================================
+           Fixed Bottom Bar
+           ============================================================ */
+        .wo-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-top: 1px solid var(--dj-gray-200);
+            padding: 12px 16px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .wo-bottom-bar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .wo-unsaved-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--dj-warning);
+        }
+
+        .wo-unsaved-indicator.is-visible {
+            display: flex;
+        }
+
+        .wo-unsaved-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--dj-warning);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ============================================================
+           Toast Notification
+           ============================================================ */
+        .wo-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: var(--dj-border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .wo-toast.is-visible {
+            opacity: 1;
+        }
+
+        .wo-toast-success {
+            background-color: var(--dj-success);
+            color: white;
+        }
+
+        .wo-toast-error {
+            background-color: var(--dj-danger);
+            color: white;
+        }
+
+        /* ============================================================
+           Delete Confirmation Modal
+           ============================================================ */
+        .wo-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+        }
+
+        .wo-modal-backdrop.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .wo-modal {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+        }
+
+        .wo-modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0 0 12px 0;
+        }
+
+        .wo-modal-message {
+            font-size: 14px;
+            color: var(--dj-gray-600);
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+
+        .wo-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* ============================================================
+           Demo Banner
+           ============================================================ */
+        .demo-banner {
+            background: linear-gradient(135deg, var(--dj-primary), var(--dj-primary-dark));
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .demo-banner strong {
+            font-weight: 600;
+        }
+
+        /* ============================================================
+           Responsive
+           ============================================================ */
+        @media (max-width: 767px) {
+            .wo-line-items-table thead {
+                display: none;
+            }
+
+            .wo-line-item-row {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 12px;
+                gap: 8px;
+            }
+
+            .wo-line-item-row td {
+                padding: 4px;
+                border: none;
+            }
+
+            .wo-line-item-row td.wo-col-drag {
+                width: 30px;
+                order: 1;
+            }
+
+            .wo-line-item-row td.wo-col-item {
+                flex: 1;
+                order: 2;
+                min-width: calc(100% - 80px);
+            }
+
+            .wo-line-item-row td.wo-col-actions {
+                width: 40px;
+                order: 3;
+            }
+
+            .wo-line-item-row td.wo-col-prep,
+            .wo-line-item-row td.wo-col-working,
+            .wo-line-item-row td.wo-col-total,
+            .wo-line-item-row td.wo-col-unit,
+            .wo-line-item-row td.wo-col-coats {
+                width: calc(50% - 4px);
+                order: 4;
+            }
+
+            .wo-field-input,
+            .wo-field-value {
+                text-align: left;
+            }
+
+            .wo-editable-field::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 11px;
+                color: var(--dj-gray-500);
+                text-transform: uppercase;
+                margin-bottom: 4px;
+            }
+
+            .wo-grand-totals-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================================
+           Rule 4: Print Styles - State Badge on Printouts
+           ============================================================ */
+        @media print {
+            .demo-banner,
+            .wo-edit-controls,
+            .wo-bottom-bar,
+            .wo-drag-handle,
+            .wo-area-drag-handle,
+            .wo-delete-btn,
+            .wo-toast {
+                display: none !important;
+            }
+
+            .wo-edit-page {
+                background: white;
+                padding: 0;
+            }
+
+            .wo-header,
+            .wo-area-card,
+            .wo-grand-totals,
+            .wo-dates-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            /* Always show state badge on print */
+            .wo-badge {
+                display: inline-block !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .wo-badge-success {
+                background-color: #D1FAE5 !important;
+            }
+
+            /* Change order badge - visible on print */
+            .wo-change-order-badge {
+                display: inline-flex !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background-color: #10B981 !important;
+                color: white !important;
+            }
+
+            .wo-line-item-row.wo-change-order-item {
+                background: rgba(16, 185, 129, 0.1) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Date pills - visible on print with colors */
+            .wo-date-pill {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .wo-date-pill.stage-created {
+                background-color: #E5E7EB !important;
+            }
+
+            .wo-date-pill.stage-accepted {
+                background-color: #DBEAFE !important;
+            }
+
+            .wo-date-pill.stage-scheduled {
+                background-color: #F3E8FF !important;
+            }
+
+            .wo-date-pill.stage-actual {
+                background-color: #D1FAE5 !important;
+            }
+
+            .wo-date-pill.stage-pending {
+                background-color: #FEF3C7 !important;
+            }
+
+            .wo-date-pill.stage-change-order {
+                background-color: #ECFDF5 !important;
+            }
+
+            .wo-date-pill .wo-date-input {
+                display: none !important;
+            }
+
+            .wo-date-pill .wo-date-pill-value {
+                display: inline !important;
+            }
+
+            /* Crew notes - visible on print */
+            .wo-crew-notes {
+                page-break-inside: avoid;
+            }
+
+            .wo-crew-notes-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background: #F97316 !important;
+            }
+
+            .wo-crew-notes-body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background-color: #FFF7ED !important;
+                border-color: #FDBA74 !important;
+            }
+
+            .wo-crew-notes-content {
+                display: block !important;
+            }
+
+            .wo-crew-notes-textarea {
+                display: none !important;
+            }
+
+            /* Show values, hide inputs */
+            .wo-field-value {
+                display: block !important;
+            }
+
+            .wo-field-input,
+            .wo-area-title-input {
+                display: none !important;
+            }
+
+            .wo-area-title {
+                display: block !important;
+            }
+
+            .wo-warning-banner {
+                display: none !important;
+            }
+        }
+
+        /* ============================================================
+           Rule 3: Hours Visibility Toggle
+           ============================================================ */
+        .wo-settings-panel {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+            display: none; /* Hidden by default, shown in edit mode */
+        }
+
+        .wo-edit-mode .wo-settings-panel {
+            display: block;
+        }
+
+        .wo-settings-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0 0 12px 0;
+        }
+
+        .wo-settings-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .wo-setting-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background-color: var(--dj-gray-300);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-toggle.is-active {
+            background-color: var(--dj-primary);
+        }
+
+        .wo-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: var(--dj-transition);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .wo-toggle.is-active::after {
+            left: 22px;
+        }
+
+        .wo-setting-label {
+            font-size: 14px;
+            color: var(--dj-gray-700);
+        }
+
+        /* Hours columns hidden state */
+        .wo-hours-hidden .wo-col-prep,
+        .wo-hours-hidden .wo-col-working,
+        .wo-hours-hidden .wo-col-total,
+        .wo-hours-hidden .wo-area-totals,
+        .wo-hours-hidden .wo-grand-totals,
+        .wo-hours-hidden .wo-area-summary {
+            display: none !important;
+        }
+
+        /* ============================================================
+           Rule 8: Date Tracking Section
+           ============================================================ */
+        .wo-dates-card {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .wo-dates-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .wo-dates-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-dates-title svg {
+            color: var(--dj-primary);
+        }
+
+        /* Horizontal Timeline Flow */
+        .wo-dates-flow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .wo-date-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .wo-date-pill-label {
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        .wo-date-pill-value {
+            font-weight: 600;
+        }
+
+        /* Stage Colors */
+        .wo-date-pill.stage-created {
+            background-color: #E5E7EB;
+            color: #374151;
+        }
+
+        .wo-date-pill.stage-accepted {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .wo-date-pill.stage-scheduled {
+            background-color: #F3E8FF;
+            color: #7C3AED;
+        }
+
+        .wo-date-pill.stage-actual {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .wo-date-pill.stage-pending {
+            background-color: #FEF3C7;
+            color: #92400E;
+            border: 1px dashed #F59E0B;
+        }
+
+        .wo-date-pill.stage-change-order {
+            background-color: #ECFDF5;
+            color: #047857;
+            border: 1px solid #10B981;
+        }
+
+        /* Arrow separator between stages */
+        .wo-date-arrow {
+            color: var(--dj-gray-400);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Edit mode for editable dates */
+        .wo-date-pill .wo-date-input {
+            display: none;
+            padding: 4px 8px;
+            border: 1px solid currentColor;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+            color: inherit;
+            width: 130px;
+        }
+
+        .wo-date-pill .wo-date-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+        }
+
+        .wo-edit-mode .wo-date-pill.is-editable .wo-date-pill-value {
+            display: none;
+        }
+
+        .wo-edit-mode .wo-date-pill.is-editable .wo-date-input {
+            display: block;
+        }
+
+        /* Legacy grid styles (kept for compatibility) */
+        .wo-dates-grid {
+            display: none;
+        }
+
+        .wo-change-orders {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--dj-gray-200);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .wo-change-orders .wo-date-label {
+            font-size: 11px;
+            color: var(--dj-gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        /* ============================================================
+           Crew Notes Section
+           ============================================================ */
+        .wo-crew-notes {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .wo-crew-notes-header {
+            background: linear-gradient(135deg, #F97316, #FB923C);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-crew-notes-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-crew-notes-title svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .wo-crew-notes-for {
+            font-weight: 400;
+            opacity: 0.9;
+            font-size: 13px;
+        }
+
+        .wo-crew-notes-body {
+            padding: 16px;
+            background-color: #FFF7ED;
+            border: 1px solid #FDBA74;
+            border-top: none;
+            border-radius: 0 0 var(--dj-border-radius) var(--dj-border-radius);
+        }
+
+        .wo-crew-notes-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--dj-gray-800);
+            white-space: pre-wrap;
+        }
+
+        .wo-crew-notes-content:empty::before {
+            content: 'No crew notes added.';
+            color: var(--dj-gray-400);
+            font-style: italic;
+        }
+
+        /* Editable crew notes */
+        .wo-crew-notes-textarea {
+            display: none;
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid var(--dj-gray-300);
+            border-radius: 4px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--dj-gray-800);
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .wo-crew-notes-textarea:focus {
+            outline: none;
+            border-color: var(--dj-primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .wo-edit-mode .wo-crew-notes-content {
+            display: none;
+        }
+
+        .wo-edit-mode .wo-crew-notes-textarea {
+            display: block;
+        }
+
+        .wo-edit-mode .wo-crew-notes-body {
+            background-color: white;
+            border-color: var(--dj-gray-200);
+        }
+
+        /* ============================================================
+           Rule 2: Crew-Specific Work Orders
+           ============================================================ */
+        .wo-crew-selector {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .wo-crew-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .wo-crew-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-crew-title svg {
+            color: var(--dj-primary);
+        }
+
+        .wo-crew-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .wo-crew-tab {
+            padding: 8px 16px;
+            border: 2px solid var(--dj-gray-200);
+            border-radius: var(--dj-border-radius);
+            background-color: white;
+            color: var(--dj-gray-600);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--dj-transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .wo-crew-tab:hover {
+            border-color: var(--dj-primary-light);
+            color: var(--dj-primary);
+        }
+
+        .wo-crew-tab.is-active {
+            border-color: var(--dj-primary);
+            background-color: var(--dj-primary-bg);
+            color: var(--dj-primary);
+        }
+
+        .wo-crew-tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background-color: var(--dj-gray-200);
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .wo-crew-tab.is-active .wo-crew-tab-count {
+            background-color: var(--dj-primary);
+            color: white;
+        }
+
+        .wo-crew-add-btn {
+            padding: 8px 12px;
+            border: 2px dashed var(--dj-gray-300);
+            border-radius: var(--dj-border-radius);
+            background-color: transparent;
+            color: var(--dj-gray-500);
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--dj-transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .wo-crew-add-btn:hover {
+            border-color: var(--dj-primary);
+            color: var(--dj-primary);
+            background-color: var(--dj-primary-bg);
+        }
+
+        .wo-crew-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            background-color: var(--dj-gray-50);
+            border-radius: var(--dj-border-radius);
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--dj-gray-600);
+        }
+
+        .wo-crew-info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .wo-crew-info-label {
+            color: var(--dj-gray-500);
+        }
+
+        .wo-crew-info-value {
+            font-weight: 500;
+            color: var(--dj-gray-700);
+        }
+
+        /* Crew assignment checkboxes on line items */
+        .wo-crew-assign {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--dj-gray-200);
+        }
+
+        .wo-edit-mode .wo-crew-assign {
+            display: flex;
+        }
+
+        .wo-crew-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--dj-primary);
+            cursor: pointer;
+        }
+
+        .wo-crew-checkbox-label {
+            font-size: 11px;
+            color: var(--dj-gray-500);
+        }
+
+        /* Excluded items styling */
+        .wo-line-item-row.is-excluded {
+            opacity: 0.4;
+            background-color: var(--dj-gray-50);
+        }
+
+        .wo-line-item-row.is-excluded .wo-item-name::after {
+            content: ' (Not assigned to this crew)';
+            font-size: 11px;
+            font-style: italic;
+            color: var(--dj-gray-400);
+        }
+
+        /* Create Crew Modal */
+        .wo-create-crew-modal .wo-modal {
+            max-width: 500px;
+        }
+
+        .wo-form-group {
+            margin-bottom: 16px;
+        }
+
+        .wo-form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--dj-gray-700);
+            margin-bottom: 6px;
+        }
+
+        .wo-form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--dj-gray-300);
+            border-radius: var(--dj-border-radius);
+            font-size: 14px;
+            color: var(--dj-gray-700);
+        }
+
+        .wo-form-input:focus {
+            outline: none;
+            border-color: var(--dj-primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .wo-form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--dj-gray-300);
+            border-radius: var(--dj-border-radius);
+            font-size: 14px;
+            color: var(--dj-gray-700);
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .wo-form-hint {
+            font-size: 12px;
+            color: var(--dj-gray-500);
+            margin-top: 4px;
+        }
+
+        .wo-checkbox-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--dj-gray-200);
+            border-radius: var(--dj-border-radius);
+            padding: 8px;
+        }
+
+        .wo-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .wo-checkbox-item:hover {
+            background-color: var(--dj-gray-50);
+        }
+
+        .wo-checkbox-item input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--dj-primary);
+        }
+
+        .wo-checkbox-item-text {
+            flex: 1;
+            font-size: 13px;
+            color: var(--dj-gray-700);
+        }
+
+        .wo-checkbox-item-area {
+            font-size: 11px;
+            color: var(--dj-gray-500);
+        }
+
+        /* Assign To Tabs (Crew Type / Subcontractor) */
+        .wo-assign-type-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .wo-assign-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: 2px solid var(--dj-gray-200);
+            border-radius: var(--dj-border-radius);
+            background-color: white;
+            color: var(--dj-gray-600);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-assign-tab:hover {
+            border-color: var(--dj-primary-light);
+            color: var(--dj-primary);
+        }
+
+        .wo-assign-tab.is-active {
+            border-color: var(--dj-primary);
+            background-color: var(--dj-primary-bg);
+            color: var(--dj-primary);
+        }
+
+        .wo-assign-tab svg {
+            flex-shrink: 0;
+        }
+
+        /* Assign Panels */
+        .wo-assign-panel {
+            display: none;
+        }
+
+        .wo-assign-panel.is-active {
+            display: block;
+        }
+
+        /* Subcontractor Card */
+        .wo-subcontractor-info {
+            margin-top: 12px;
+        }
+
+        .wo-subcontractor-info.is-hidden {
+            display: none;
+        }
+
+        .wo-subcontractor-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background-color: var(--dj-success-bg);
+            border: 1px solid var(--dj-success-border);
+            border-radius: var(--dj-border-radius);
+        }
+
+        .wo-subcontractor-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: var(--dj-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .wo-subcontractor-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .wo-subcontractor-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+        }
+
+        .wo-subcontractor-specialty {
+            font-size: 12px;
+            color: var(--dj-gray-600);
+        }
+
+        .wo-subcontractor-contact {
+            font-size: 12px;
+            color: var(--dj-gray-500);
+            margin-top: 2px;
+        }
+
+        /* Subcontractor crew tab styling */
+        .wo-crew-tab.is-subcontractor {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .wo-crew-tab.is-subcontractor svg {
+            color: var(--dj-primary);
+        }
+
+        .wo-crew-tab.is-subcontractor.is-active svg {
+            color: white;
+        }
+
+        /* ============================================================
+           Rule 5: Media/File Management
+           ============================================================ */
+        .wo-media-section {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .wo-media-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .wo-media-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-media-title svg {
+            color: var(--dj-primary);
+        }
+
+        .wo-media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .wo-media-item {
+            position: relative;
+            border-radius: var(--dj-border-radius);
+            overflow: hidden;
+            background-color: var(--dj-gray-100);
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-media-item:hover {
+            transform: scale(1.02);
+        }
+
+        .wo-media-item.is-hidden {
+            opacity: 0.4;
+        }
+
+        .wo-media-item.is-hidden::after {
+            content: 'Hidden';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .wo-media-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .wo-media-file {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .wo-media-file svg {
+            color: var(--dj-gray-400);
+            margin-bottom: 8px;
+        }
+
+        .wo-media-file-name {
+            font-size: 11px;
+            color: var(--dj-gray-600);
+            word-break: break-word;
+        }
+
+        .wo-media-toggle {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid var(--dj-gray-300);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-media-toggle svg {
+            width: 14px;
+            height: 14px;
+            color: var(--dj-gray-400);
+        }
+
+        .wo-edit-mode .wo-media-toggle {
+            display: flex;
+        }
+
+        .wo-media-item:not(.is-hidden) .wo-media-toggle {
+            background-color: var(--dj-success);
+            border-color: var(--dj-success);
+        }
+
+        .wo-media-item:not(.is-hidden) .wo-media-toggle svg {
+            color: white;
+        }
+
+        /* ============================================================
+           Rule 6: Packaged Pricing Display
+           ============================================================ */
+        .wo-package-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background-color: var(--dj-primary-bg);
+            border: 1px solid var(--dj-primary-border);
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--dj-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        .wo-package-badge svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .wo-package-indicator {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: var(--dj-primary);
+        }
+
+        .wo-line-item-row.is-package-item {
+            position: relative;
+        }
+
+        .wo-line-item-row.is-package-item td:first-child {
+            padding-left: 16px;
+        }
+
+        .wo-package-header {
+            background-color: var(--dj-primary-bg);
+            padding: 10px 16px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dj-primary-dark);
+            border-bottom: 1px solid var(--dj-primary-border);
+        }
+
+        .wo-package-header svg {
+            color: var(--dj-primary);
+        }
+
+        .wo-package-name {
+            flex: 1;
+        }
+
+        .wo-package-item-count {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--dj-primary);
+            background-color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* ============================================================
+           Rule 7: Product Change Capability
+           ============================================================ */
+        .wo-product-select-btn {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            margin-top: 6px;
+            background-color: transparent;
+            border: 1px dashed var(--dj-gray-300);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--dj-gray-500);
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-product-select-btn:hover {
+            border-color: var(--dj-primary);
+            color: var(--dj-primary);
+            background-color: var(--dj-primary-bg);
+        }
+
+        .wo-edit-mode .wo-product-select-btn {
+            display: inline-flex;
+        }
+
+        /* Product Change Modal */
+        .wo-product-modal .wo-modal {
+            max-width: 600px;
+        }
+
+        .wo-product-current {
+            padding: 12px;
+            background-color: var(--dj-gray-50);
+            border-radius: var(--dj-border-radius);
+            margin-bottom: 16px;
+        }
+
+        .wo-product-current-label {
+            font-size: 11px;
+            color: var(--dj-gray-500);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .wo-product-current-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dj-gray-800);
+        }
+
+        .wo-product-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--dj-gray-200);
+            border-radius: var(--dj-border-radius);
+        }
+
+        .wo-product-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid var(--dj-gray-200);
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-product-option:last-child {
+            border-bottom: none;
+        }
+
+        .wo-product-option:hover {
+            background-color: var(--dj-gray-50);
+        }
+
+        .wo-product-option.is-selected {
+            background-color: var(--dj-primary-bg);
+            border-left: 3px solid var(--dj-primary);
+        }
+
+        .wo-product-option-radio {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--dj-primary);
+        }
+
+        .wo-product-option-info {
+            flex: 1;
+        }
+
+        .wo-product-option-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dj-gray-800);
+            margin-bottom: 2px;
+        }
+
+        .wo-product-option-details {
+            font-size: 12px;
+            color: var(--dj-gray-500);
+        }
+
+        .wo-product-option-tier {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .wo-product-option-tier.tier-good {
+            background-color: var(--dj-gray-100);
+            color: var(--dj-gray-600);
+        }
+
+        .wo-product-option-tier.tier-better {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .wo-product-option-tier.tier-best {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Banner -->
+    <div class="demo-banner">
+        <strong>DEMO MODE</strong> - This is a standalone test version. Drag-and-drop and UI interactions work without a backend.
+    </div>
+
+    <div class="wo-edit-page" id="wo-edit-page">
+        <div class="wo-container">
+
+            <!-- Header Section -->
+            <div class="wo-header">
+                <div class="wo-header-top">
+                    <div>
+                        <h1 class="wo-title">Work Order #2423055</h1>
+                        <p class="wo-subtitle">Interior Painting Project • Johnson Residence</p>
+                    </div>
+                    <div>
+                        <span class="wo-badge wo-badge-success">Accepted</span>
+                    </div>
+                </div>
+
+                <!-- Warning Banner -->
+                <div class="wo-warning-banner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span>Changes to this Work Order do not modify the original Proposal or Job Costing records.</span>
+                </div>
+            </div>
+
+            <!-- Rule 2: Crew-Specific Work Orders -->
+            <div class="wo-crew-selector">
+                <div class="wo-crew-header">
+                    <h4 class="wo-crew-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Work Order Versions
+                    </h4>
+                </div>
+                <div class="wo-crew-tabs">
+                    <button type="button" class="wo-crew-tab is-active" data-crew-id="all">
+                        <span>Master (All Items)</span>
+                        <span class="wo-crew-tab-count">6</span>
+                    </button>
+                    <button type="button" class="wo-crew-tab" data-crew-id="painting">
+                        <span>Painting Crew</span>
+                        <span class="wo-crew-tab-count">4</span>
+                    </button>
+                    <button type="button" class="wo-crew-tab" data-crew-id="cabinets">
+                        <span>Cabinet Team</span>
+                        <span class="wo-crew-tab-count">1</span>
+                    </button>
+                    <button type="button" class="wo-crew-add-btn" id="wo-add-crew-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        New Crew WO
+                    </button>
+                </div>
+                <div class="wo-crew-info" id="wo-crew-info">
+                    <div class="wo-crew-info-item">
+                        <span class="wo-crew-info-label">Viewing:</span>
+                        <span class="wo-crew-info-value" id="wo-crew-name">Master Work Order (All Items)</span>
+                    </div>
+                    <div class="wo-crew-info-item">
+                        <span class="wo-crew-info-label">Items:</span>
+                        <span class="wo-crew-info-value" id="wo-crew-items">6 line items</span>
+                    </div>
+                    <div class="wo-crew-info-item">
+                        <span class="wo-crew-info-label">Hours:</span>
+                        <span class="wo-crew-info-value" id="wo-crew-hours">16.20 hrs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 8: Date Tracking Section -->
+            <div class="wo-dates-card">
+                <div class="wo-dates-header">
+                    <h4 class="wo-dates-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Project Timeline
+                    </h4>
+                </div>
+                <div class="wo-dates-flow">
+                    <!-- Created -->
+                    <div class="wo-date-pill stage-created">
+                        <span class="wo-date-pill-label">Created:</span>
+                        <span class="wo-date-pill-value">Jan 15</span>
+                    </div>
+                    <span class="wo-date-arrow">→</span>
+                    <!-- Accepted -->
+                    <div class="wo-date-pill stage-accepted">
+                        <span class="wo-date-pill-label">Accepted:</span>
+                        <span class="wo-date-pill-value">Jan 20</span>
+                    </div>
+                    <span class="wo-date-arrow">→</span>
+                    <!-- Scheduled -->
+                    <div class="wo-date-pill stage-scheduled">
+                        <span class="wo-date-pill-label">Scheduled:</span>
+                        <span class="wo-date-pill-value">Feb 3 - 7</span>
+                    </div>
+                    <span class="wo-date-arrow">→</span>
+                    <!-- Actual Start (editable) -->
+                    <div class="wo-date-pill stage-pending is-editable">
+                        <span class="wo-date-pill-label">Started:</span>
+                        <span class="wo-date-pill-value">Not Set</span>
+                        <input type="date" class="wo-date-input" value="" />
+                    </div>
+                    <span class="wo-date-arrow">→</span>
+                    <!-- Actual Completion (editable) -->
+                    <div class="wo-date-pill stage-pending is-editable">
+                        <span class="wo-date-pill-label">Completed:</span>
+                        <span class="wo-date-pill-value">Not Set</span>
+                        <input type="date" class="wo-date-input" value="" />
+                    </div>
+                </div>
+                <!-- Change Orders (if any) -->
+                <div class="wo-change-orders">
+                    <span class="wo-date-label">Change Orders:</span>
+                    <div class="wo-date-pill stage-change-order">
+                        <span class="wo-date-pill-label">#83670</span>
+                        <span class="wo-date-pill-value">Jan 22</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crew Notes Section -->
+            <div class="wo-crew-notes">
+                <div class="wo-crew-notes-header">
+                    <h4 class="wo-crew-notes-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Crew Notes <span class="wo-crew-notes-for" id="wo-crew-notes-for">(All Crews)</span>
+                    </h4>
+                </div>
+                <div class="wo-crew-notes-body">
+                    <div class="wo-crew-notes-content" id="wo-crew-notes-display">Be sure to keep the back room door closed. There is a massive dog in there and he just can't wait to get his big old paws in some paint and help out! 🐕 🐾 🎨</div>
+                    <textarea class="wo-crew-notes-textarea" id="wo-crew-notes-input" placeholder="Add notes for the crew working on this job...">Be sure to keep the back room door closed. There is a massive dog in there and he just can't wait to get his big old paws in some paint and help out! 🐕 🐾 🎨</textarea>
+                </div>
+            </div>
+
+            <!-- Edit Mode Controls -->
+            <div class="wo-edit-controls">
+                <button type="button" class="wo-btn wo-btn-primary" id="wo-edit-mode-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Work Order
+                </button>
+
+                <button type="button" class="wo-btn wo-btn-success" id="wo-save-mode-btn" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save Changes
+                </button>
+
+                <button type="button" class="wo-btn wo-btn-secondary" id="wo-cancel-mode-btn" style="display: none;">
+                    Cancel
+                </button>
+            </div>
+
+            <!-- Rule 3: Work Order Settings Panel (visible in edit mode) -->
+            <div class="wo-settings-panel">
+                <h4 class="wo-settings-title">Work Order Display Options</h4>
+                <div class="wo-settings-grid">
+                    <div class="wo-setting-item">
+                        <div class="wo-toggle is-active" id="wo-toggle-hours" data-setting="showHours"></div>
+                        <span class="wo-setting-label">Show Hours</span>
+                    </div>
+                    <div class="wo-setting-item">
+                        <div class="wo-toggle is-active" id="wo-toggle-totals" data-setting="showTotals"></div>
+                        <span class="wo-setting-label">Show Totals</span>
+                    </div>
+                    <div class="wo-setting-item">
+                        <div class="wo-toggle is-active" id="wo-toggle-products" data-setting="showProducts"></div>
+                        <span class="wo-setting-label">Show Product Details</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Areas/Sections Container (Sortable) -->
+            <div class="wo-areas-container" id="wo-areas-container">
+
+                <!-- Area 1: Guest Bedroom -->
+                <div class="wo-area-card" data-area-id="1">
+                    <div class="wo-area-header">
+                        <div class="wo-area-drag-handle" title="Drag to reorder section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="9" cy="6" r="1.5"></circle>
+                                <circle cx="15" cy="6" r="1.5"></circle>
+                                <circle cx="9" cy="12" r="1.5"></circle>
+                                <circle cx="15" cy="12" r="1.5"></circle>
+                                <circle cx="9" cy="18" r="1.5"></circle>
+                                <circle cx="15" cy="18" r="1.5"></circle>
+                            </svg>
+                        </div>
+
+                        <div class="wo-area-title-wrapper">
+                            <h3 class="wo-area-title">Guest Bedroom</h3>
+                            <input type="text" class="wo-area-title-input" value="Guest Bedroom" data-original-value="Guest Bedroom" placeholder="Enter area name" />
+                        </div>
+
+                        <span class="wo-area-summary">
+                            3 items • <span class="wo-area-total">6.70</span> hrs
+                        </span>
+
+                        <button type="button" class="wo-area-collapse-btn" title="Collapse/Expand">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="wo-area-body">
+                        <table class="wo-line-items-table">
+                            <thead>
+                                <tr>
+                                    <th class="wo-col-drag"></th>
+                                    <th class="wo-col-item">Item</th>
+                                    <th class="wo-col-prep">Prep Hrs</th>
+                                    <th class="wo-col-working">Working Hrs</th>
+                                    <th class="wo-col-total">Total Hrs</th>
+                                    <th class="wo-col-unit">Unit</th>
+                                    <th class="wo-col-coats">Coats</th>
+                                    <th class="wo-col-actions"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="wo-line-items-tbody" data-area-id="1">
+                                <tr class="wo-line-item-row wo-package-item" data-line-item-id="101" data-package-id="pkg-001">
+                                    <td class="wo-col-drag">
+                                        <div class="wo-drag-handle" title="Drag to reorder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="9" cy="6" r="1.5"></circle>
+                                                <circle cx="15" cy="6" r="1.5"></circle>
+                                                <circle cx="9" cy="12" r="1.5"></circle>
+                                                <circle cx="15" cy="12" r="1.5"></circle>
+                                                <circle cx="9" cy="18" r="1.5"></circle>
+                                                <circle cx="15" cy="18" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-item">
+                                        <div class="wo-item-name">9FT Heavy Texture</div>
+                                        <div class="wo-item-details">
+                                            <span class="wo-package-badge">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                                </svg>
+                                                Bedroom Paint Pkg
+                                            </span>
+                                            <span class="wo-item-type-badge">Walls</span>
+                                            Sherwin Williams SuperPaint Interior (Satin)
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-prep wo-editable-field" data-label="Prep Hrs">
+                                        <span class="wo-field-value" data-field="PrepHrs">
+                                            <span class="wo-field-number">0.00</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="PrepHrs" data-original-value="0.00" value="0.00" title="Prep Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-working wo-editable-field" data-label="Working Hrs">
+                                        <span class="wo-field-value" data-field="WorkingHrs">
+                                            <span class="wo-field-number">2.20</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="WorkingHrs" data-original-value="2.20" value="2.20" title="Working Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-total wo-editable-field" data-label="Total Hrs">
+                                        <span class="wo-field-value">
+                                            <span class="wo-total-hrs">2.20</span>
+                                        </span>
+                                    </td>
+                                    <td class="wo-col-unit wo-editable-field" data-label="Unit">
+                                        <span class="wo-field-value" data-field="Unit">
+                                            <span class="wo-field-number">120</span>
+                                            <span class="wo-field-unit">sqft</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" class="wo-field-input" data-field="Unit" data-original-value="120" data-unit="sqft" value="120" title="Unit Quantity" />
+                                            <span class="wo-field-unit">sqft</span>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-coats wo-editable-field" data-label="Coats">
+                                        <span class="wo-field-value" data-field="Coats">
+                                            <span class="wo-field-number">1</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="1" value="1" title="Coats" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-actions">
+                                        <button type="button" class="wo-product-change-btn" title="Change product">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="wo-delete-btn" title="Delete item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="wo-line-item-row wo-package-item" data-line-item-id="102" data-package-id="pkg-001">
+                                    <td class="wo-col-drag">
+                                        <div class="wo-drag-handle" title="Drag to reorder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="9" cy="6" r="1.5"></circle>
+                                                <circle cx="15" cy="6" r="1.5"></circle>
+                                                <circle cx="9" cy="12" r="1.5"></circle>
+                                                <circle cx="15" cy="12" r="1.5"></circle>
+                                                <circle cx="9" cy="18" r="1.5"></circle>
+                                                <circle cx="15" cy="18" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-item">
+                                        <div class="wo-item-name">9FT Ceiling Smooth</div>
+                                        <div class="wo-item-details">
+                                            <span class="wo-package-badge">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                                </svg>
+                                                Bedroom Paint Pkg
+                                            </span>
+                                            <span class="wo-item-type-badge">Ceiling</span>
+                                            Sherwin Williams ProMar 200 (Flat)
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-prep wo-editable-field" data-label="Prep Hrs">
+                                        <span class="wo-field-value" data-field="PrepHrs">
+                                            <span class="wo-field-number">0.50</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="PrepHrs" data-original-value="0.50" value="0.50" title="Prep Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-working wo-editable-field" data-label="Working Hrs">
+                                        <span class="wo-field-value" data-field="WorkingHrs">
+                                            <span class="wo-field-number">1.50</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="WorkingHrs" data-original-value="1.50" value="1.50" title="Working Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-total wo-editable-field" data-label="Total Hrs">
+                                        <span class="wo-field-value">
+                                            <span class="wo-total-hrs">2.00</span>
+                                        </span>
+                                    </td>
+                                    <td class="wo-col-unit wo-editable-field" data-label="Unit">
+                                        <span class="wo-field-value" data-field="Unit">
+                                            <span class="wo-field-number">144</span>
+                                            <span class="wo-field-unit">sqft</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" class="wo-field-input" data-field="Unit" data-original-value="144" data-unit="sqft" value="144" title="Unit Quantity" />
+                                            <span class="wo-field-unit">sqft</span>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-coats wo-editable-field" data-label="Coats">
+                                        <span class="wo-field-value" data-field="Coats">
+                                            <span class="wo-field-number">2</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-actions">
+                                        <button type="button" class="wo-product-change-btn" title="Change product">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="wo-delete-btn" title="Delete item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="wo-line-item-row" data-line-item-id="103">
+                                    <td class="wo-col-drag">
+                                        <div class="wo-drag-handle" title="Drag to reorder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="9" cy="6" r="1.5"></circle>
+                                                <circle cx="15" cy="6" r="1.5"></circle>
+                                                <circle cx="9" cy="12" r="1.5"></circle>
+                                                <circle cx="15" cy="12" r="1.5"></circle>
+                                                <circle cx="9" cy="18" r="1.5"></circle>
+                                                <circle cx="15" cy="18" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-item">
+                                        <div class="wo-item-name">Baseboard Trim</div>
+                                        <div class="wo-item-details">
+                                            <span class="wo-item-type-badge">Trim</span>
+                                            Sherwin Williams ProClassic (Semi-Gloss)
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-prep wo-editable-field" data-label="Prep Hrs">
+                                        <span class="wo-field-value" data-field="PrepHrs">
+                                            <span class="wo-field-number">0.75</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="PrepHrs" data-original-value="0.75" value="0.75" title="Prep Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-working wo-editable-field" data-label="Working Hrs">
+                                        <span class="wo-field-value" data-field="WorkingHrs">
+                                            <span class="wo-field-number">1.75</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="WorkingHrs" data-original-value="1.75" value="1.75" title="Working Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-total wo-editable-field" data-label="Total Hrs">
+                                        <span class="wo-field-value">
+                                            <span class="wo-total-hrs">2.50</span>
+                                        </span>
+                                    </td>
+                                    <td class="wo-col-unit wo-editable-field" data-label="Unit">
+                                        <span class="wo-field-value" data-field="Unit">
+                                            <span class="wo-field-number">48</span>
+                                            <span class="wo-field-unit">lft</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" class="wo-field-input" data-field="Unit" data-original-value="48" data-unit="lft" value="48" title="Unit Quantity" />
+                                            <span class="wo-field-unit">lft</span>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-coats wo-editable-field" data-label="Coats">
+                                        <span class="wo-field-value" data-field="Coats">
+                                            <span class="wo-field-number">2</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-actions">
+                                        <button type="button" class="wo-product-change-btn" title="Change product">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="wo-delete-btn" title="Delete item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="wo-area-totals">
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Prep Hours</div>
+                                <div class="wo-area-total-value wo-area-prep-total">1.25</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Working Hours</div>
+                                <div class="wo-area-total-value wo-area-working-total">5.45</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Total Hours</div>
+                                <div class="wo-area-total-value is-primary wo-area-total">6.70</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Area 2: Living Room -->
+                <div class="wo-area-card" data-area-id="2">
+                    <div class="wo-area-header">
+                        <div class="wo-area-drag-handle" title="Drag to reorder section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="9" cy="6" r="1.5"></circle>
+                                <circle cx="15" cy="6" r="1.5"></circle>
+                                <circle cx="9" cy="12" r="1.5"></circle>
+                                <circle cx="15" cy="12" r="1.5"></circle>
+                                <circle cx="9" cy="18" r="1.5"></circle>
+                                <circle cx="15" cy="18" r="1.5"></circle>
+                            </svg>
+                        </div>
+
+                        <div class="wo-area-title-wrapper">
+                            <h3 class="wo-area-title">Living Room</h3>
+                            <input type="text" class="wo-area-title-input" value="Living Room" data-original-value="Living Room" placeholder="Enter area name" />
+                        </div>
+
+                        <span class="wo-area-summary">
+                            2 items • <span class="wo-area-total">5.50</span> hrs
+                        </span>
+
+                        <button type="button" class="wo-area-collapse-btn" title="Collapse/Expand">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="wo-area-body">
+                        <table class="wo-line-items-table">
+                            <thead>
+                                <tr>
+                                    <th class="wo-col-drag"></th>
+                                    <th class="wo-col-item">Item</th>
+                                    <th class="wo-col-prep">Prep Hrs</th>
+                                    <th class="wo-col-working">Working Hrs</th>
+                                    <th class="wo-col-total">Total Hrs</th>
+                                    <th class="wo-col-unit">Unit</th>
+                                    <th class="wo-col-coats">Coats</th>
+                                    <th class="wo-col-actions"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="wo-line-items-tbody" data-area-id="2">
+                                <tr class="wo-line-item-row" data-line-item-id="201">
+                                    <td class="wo-col-drag">
+                                        <div class="wo-drag-handle" title="Drag to reorder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="9" cy="6" r="1.5"></circle>
+                                                <circle cx="15" cy="6" r="1.5"></circle>
+                                                <circle cx="9" cy="12" r="1.5"></circle>
+                                                <circle cx="15" cy="12" r="1.5"></circle>
+                                                <circle cx="9" cy="18" r="1.5"></circle>
+                                                <circle cx="15" cy="18" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-item">
+                                        <div class="wo-item-name">Accent Wall</div>
+                                        <div class="wo-item-details">
+                                            <span class="wo-item-type-badge">Walls</span>
+                                            Benjamin Moore Regal Select (Eggshell)
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-prep wo-editable-field" data-label="Prep Hrs">
+                                        <span class="wo-field-value" data-field="PrepHrs">
+                                            <span class="wo-field-number">0.25</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="PrepHrs" data-original-value="0.25" value="0.25" title="Prep Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-working wo-editable-field" data-label="Working Hrs">
+                                        <span class="wo-field-value" data-field="WorkingHrs">
+                                            <span class="wo-field-number">2.00</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="WorkingHrs" data-original-value="2.00" value="2.00" title="Working Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-total wo-editable-field" data-label="Total Hrs">
+                                        <span class="wo-field-value">
+                                            <span class="wo-total-hrs">2.25</span>
+                                        </span>
+                                    </td>
+                                    <td class="wo-col-unit wo-editable-field" data-label="Unit">
+                                        <span class="wo-field-value" data-field="Unit">
+                                            <span class="wo-field-number">180</span>
+                                            <span class="wo-field-unit">sqft</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" class="wo-field-input" data-field="Unit" data-original-value="180" data-unit="sqft" value="180" title="Unit Quantity" />
+                                            <span class="wo-field-unit">sqft</span>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-coats wo-editable-field" data-label="Coats">
+                                        <span class="wo-field-value" data-field="Coats">
+                                            <span class="wo-field-number">2</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-actions">
+                                        <button type="button" class="wo-product-change-btn" title="Change product">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="wo-delete-btn" title="Delete item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="wo-line-item-row" data-line-item-id="202">
+                                    <td class="wo-col-drag">
+                                        <div class="wo-drag-handle" title="Drag to reorder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="9" cy="6" r="1.5"></circle>
+                                                <circle cx="15" cy="6" r="1.5"></circle>
+                                                <circle cx="9" cy="12" r="1.5"></circle>
+                                                <circle cx="15" cy="12" r="1.5"></circle>
+                                                <circle cx="9" cy="18" r="1.5"></circle>
+                                                <circle cx="15" cy="18" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-item">
+                                        <div class="wo-item-name">Crown Molding</div>
+                                        <div class="wo-item-details">
+                                            <span class="wo-item-type-badge">Trim</span>
+                                            Sherwin Williams ProClassic (Semi-Gloss)
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-prep wo-editable-field" data-label="Prep Hrs">
+                                        <span class="wo-field-value" data-field="PrepHrs">
+                                            <span class="wo-field-number">1.00</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="PrepHrs" data-original-value="1.00" value="1.00" title="Prep Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-working wo-editable-field" data-label="Working Hrs">
+                                        <span class="wo-field-value" data-field="WorkingHrs">
+                                            <span class="wo-field-number">2.25</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="WorkingHrs" data-original-value="2.25" value="2.25" title="Working Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-total wo-editable-field" data-label="Total Hrs">
+                                        <span class="wo-field-value">
+                                            <span class="wo-total-hrs">3.25</span>
+                                        </span>
+                                    </td>
+                                    <td class="wo-col-unit wo-editable-field" data-label="Unit">
+                                        <span class="wo-field-value" data-field="Unit">
+                                            <span class="wo-field-number">64</span>
+                                            <span class="wo-field-unit">lft</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" class="wo-field-input" data-field="Unit" data-original-value="64" data-unit="lft" value="64" title="Unit Quantity" />
+                                            <span class="wo-field-unit">lft</span>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-coats wo-editable-field" data-label="Coats">
+                                        <span class="wo-field-value" data-field="Coats">
+                                            <span class="wo-field-number">2</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-actions">
+                                        <button type="button" class="wo-product-change-btn" title="Change product">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="wo-delete-btn" title="Delete item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="wo-area-totals">
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Prep Hours</div>
+                                <div class="wo-area-total-value wo-area-prep-total">1.25</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Working Hours</div>
+                                <div class="wo-area-total-value wo-area-working-total">4.25</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Total Hours</div>
+                                <div class="wo-area-total-value is-primary wo-area-total">5.50</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Area 3: Kitchen -->
+                <div class="wo-area-card" data-area-id="3">
+                    <div class="wo-area-header">
+                        <div class="wo-area-drag-handle" title="Drag to reorder section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="9" cy="6" r="1.5"></circle>
+                                <circle cx="15" cy="6" r="1.5"></circle>
+                                <circle cx="9" cy="12" r="1.5"></circle>
+                                <circle cx="15" cy="12" r="1.5"></circle>
+                                <circle cx="9" cy="18" r="1.5"></circle>
+                                <circle cx="15" cy="18" r="1.5"></circle>
+                            </svg>
+                        </div>
+
+                        <div class="wo-area-title-wrapper">
+                            <h3 class="wo-area-title">Kitchen</h3>
+                            <input type="text" class="wo-area-title-input" value="Kitchen" data-original-value="Kitchen" placeholder="Enter area name" />
+                        </div>
+
+                        <span class="wo-change-order-badge" title="Added via Change Order">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="12" y1="18" x2="12" y2="12"></line>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                            </svg>
+                            Change order: 01/26/2026
+                        </span>
+
+                        <span class="wo-area-summary">
+                            1 item • <span class="wo-area-total">4.00</span> hrs
+                        </span>
+
+                        <button type="button" class="wo-area-collapse-btn" title="Collapse/Expand">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="wo-area-body">
+                        <table class="wo-line-items-table">
+                            <thead>
+                                <tr>
+                                    <th class="wo-col-drag"></th>
+                                    <th class="wo-col-item">Item</th>
+                                    <th class="wo-col-prep">Prep Hrs</th>
+                                    <th class="wo-col-working">Working Hrs</th>
+                                    <th class="wo-col-total">Total Hrs</th>
+                                    <th class="wo-col-unit">Unit</th>
+                                    <th class="wo-col-coats">Coats</th>
+                                    <th class="wo-col-actions"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="wo-line-items-tbody" data-area-id="3">
+                                <tr class="wo-line-item-row wo-change-order-item" data-line-item-id="301" data-change-order-date="01/26/2026">
+                                    <td class="wo-col-drag">
+                                        <div class="wo-drag-handle" title="Drag to reorder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="9" cy="6" r="1.5"></circle>
+                                                <circle cx="15" cy="6" r="1.5"></circle>
+                                                <circle cx="9" cy="12" r="1.5"></circle>
+                                                <circle cx="15" cy="12" r="1.5"></circle>
+                                                <circle cx="9" cy="18" r="1.5"></circle>
+                                                <circle cx="15" cy="18" r="1.5"></circle>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-item">
+                                        <div class="wo-item-name">Cabinet Refinishing</div>
+                                        <div class="wo-item-details">
+                                            <span class="wo-item-type-badge">Cabinets</span>
+                                            Benjamin Moore Advance (Satin)
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-prep wo-editable-field" data-label="Prep Hrs">
+                                        <span class="wo-field-value" data-field="PrepHrs">
+                                            <span class="wo-field-number">1.50</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="PrepHrs" data-original-value="1.50" value="1.50" title="Prep Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-working wo-editable-field" data-label="Working Hrs">
+                                        <span class="wo-field-value" data-field="WorkingHrs">
+                                            <span class="wo-field-number">2.50</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="0.25" min="0" max="24" class="wo-field-input" data-field="WorkingHrs" data-original-value="2.50" value="2.50" title="Working Hours" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-total wo-editable-field" data-label="Total Hrs">
+                                        <span class="wo-field-value">
+                                            <span class="wo-total-hrs">4.00</span>
+                                        </span>
+                                    </td>
+                                    <td class="wo-col-unit wo-editable-field" data-label="Unit">
+                                        <span class="wo-field-value" data-field="Unit">
+                                            <span class="wo-field-number">12</span>
+                                            <span class="wo-field-unit">doors</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" class="wo-field-input" data-field="Unit" data-original-value="12" data-unit="doors" value="12" title="Unit Quantity" />
+                                            <span class="wo-field-unit">doors</span>
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-coats wo-editable-field" data-label="Coats">
+                                        <span class="wo-field-value" data-field="Coats">
+                                            <span class="wo-field-number">3</span>
+                                        </span>
+                                        <div class="wo-field-edit-wrapper">
+                                            <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="3" value="3" title="Coats" />
+                                        </div>
+                                    </td>
+                                    <td class="wo-col-actions">
+                                        <button type="button" class="wo-product-change-btn" title="Change product">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                <polyline points="17 8 12 3 7 8"></polyline>
+                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="wo-delete-btn" title="Delete item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="wo-area-totals">
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Prep Hours</div>
+                                <div class="wo-area-total-value wo-area-prep-total">1.50</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Working Hours</div>
+                                <div class="wo-area-total-value wo-area-working-total">2.50</div>
+                            </div>
+                            <div class="wo-area-total-item">
+                                <div class="wo-area-total-label">Total Hours</div>
+                                <div class="wo-area-total-value is-primary wo-area-total">4.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Grand Totals -->
+            <div class="wo-grand-totals">
+                <h4 class="wo-grand-totals-title">Work Order Totals</h4>
+                <div class="wo-grand-totals-grid">
+                    <div class="wo-grand-total-item">
+                        <div class="wo-grand-total-label">Total Prep Hours</div>
+                        <div class="wo-grand-total-value" id="wo-grand-prep-hours">4.00</div>
+                    </div>
+                    <div class="wo-grand-total-item">
+                        <div class="wo-grand-total-label">Total Working Hours</div>
+                        <div class="wo-grand-total-value" id="wo-grand-working-hours">12.20</div>
+                    </div>
+                    <div class="wo-grand-total-item is-primary">
+                        <div class="wo-grand-total-label">Grand Total Hours</div>
+                        <div class="wo-grand-total-value" id="wo-grand-total-hours">16.20</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 5: Media/File Management Section -->
+            <div class="wo-media-section">
+                <div class="wo-media-header">
+                    <h4 class="wo-media-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        Attached Media & Files
+                    </h4>
+                    <span style="font-size: 12px; color: var(--dj-gray-500);">Click items to show/hide in edit mode</span>
+                </div>
+                <div class="wo-media-grid">
+                    <div class="wo-media-item" data-media-id="1">
+                        <img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=200&h=200&fit=crop" alt="Room photo" class="wo-media-thumb" />
+                        <div class="wo-media-toggle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="wo-media-item" data-media-id="2">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=200&fit=crop" alt="Kitchen photo" class="wo-media-thumb" />
+                        <div class="wo-media-toggle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="wo-media-item is-hidden" data-media-id="3">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=200&h=200&fit=crop" alt="Living room photo" class="wo-media-thumb" />
+                        <div class="wo-media-toggle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="wo-media-item" data-media-id="4">
+                        <div class="wo-media-file">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span class="wo-media-file-name">booking_form.pdf</span>
+                        </div>
+                        <div class="wo-media-toggle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="wo-media-item" data-media-id="5">
+                        <div class="wo-media-file">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span class="wo-media-file-name">color_selections.pdf</span>
+                        </div>
+                        <div class="wo-media-toggle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Fixed Bottom Bar -->
+        <div class="wo-bottom-bar">
+            <div class="wo-bottom-bar-content">
+                <div class="wo-unsaved-indicator">
+                    <span class="wo-unsaved-dot"></span>
+                    <span>Unsaved changes</span>
+                </div>
+                <div class="wo-bottom-actions">
+                    <button type="button" class="wo-btn wo-btn-secondary">
+                        Back to Work Order
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="wo-toast" id="wo-toast"></div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="wo-modal-backdrop" id="wo-delete-modal">
+            <div class="wo-modal">
+                <h4 class="wo-modal-title">Delete Line Item?</h4>
+                <p class="wo-modal-message">
+                    Are you sure you want to delete <strong id="wo-delete-item-name"></strong>?
+                    This action cannot be undone.
+                </p>
+                <div class="wo-modal-actions">
+                    <button type="button" class="wo-btn wo-btn-secondary" id="wo-delete-cancel-btn">Cancel</button>
+                    <button type="button" class="wo-btn wo-btn-danger" id="wo-delete-confirm-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rule 2: Create Crew Work Order Modal -->
+        <div class="wo-modal-backdrop wo-create-crew-modal" id="wo-create-crew-modal">
+            <div class="wo-modal">
+                <h4 class="wo-modal-title">Create Crew-Specific Work Order</h4>
+                <p class="wo-modal-message">
+                    Create a filtered version of this Work Order for a specific crew. Only selected items will be included.
+                </p>
+
+                <div class="wo-form-group">
+                    <label class="wo-form-label">Assign To</label>
+                    <div class="wo-assign-type-tabs">
+                        <button type="button" class="wo-assign-tab is-active" data-assign-type="crew">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            Crew Type
+                        </button>
+                        <button type="button" class="wo-assign-tab" data-assign-type="subcontractor">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Subcontractor
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Crew Type Panel -->
+                <div class="wo-assign-panel wo-crew-panel is-active" id="wo-crew-panel">
+                    <div class="wo-form-group">
+                        <label class="wo-form-label">Crew Name</label>
+                        <input type="text" class="wo-form-input" id="wo-new-crew-name" placeholder="e.g., Painting Crew, Trim Team" />
+                        <p class="wo-form-hint">This name will appear on the Work Order sent to the crew.</p>
+                    </div>
+                </div>
+
+                <!-- Subcontractor Panel -->
+                <div class="wo-assign-panel wo-subcontractor-panel" id="wo-subcontractor-panel">
+                    <div class="wo-form-group">
+                        <label class="wo-form-label">Select Subcontractor</label>
+                        <select class="wo-form-select" id="wo-subcontractor-select">
+                            <option value="">-- Select a Subcontractor --</option>
+                            <option value="sub-001">Joe Smith - Pressure Washer</option>
+                            <option value="sub-002">Mike's Painting LLC</option>
+                            <option value="sub-003">Sarah Johnson - Cabinet Specialist</option>
+                            <option value="sub-004">Rodriguez Drywall Services</option>
+                            <option value="sub-005">Elite Trim Carpentry</option>
+                        </select>
+                        <p class="wo-form-hint">Select a subcontractor from your contacts to assign this work order.</p>
+                    </div>
+                    <div class="wo-subcontractor-info is-hidden" id="wo-subcontractor-info">
+                        <div class="wo-subcontractor-card">
+                            <div class="wo-subcontractor-avatar">JS</div>
+                            <div class="wo-subcontractor-details">
+                                <div class="wo-subcontractor-name" id="wo-selected-sub-name">Joe Smith</div>
+                                <div class="wo-subcontractor-specialty" id="wo-selected-sub-specialty">Pressure Washing</div>
+                                <div class="wo-subcontractor-contact" id="wo-selected-sub-contact">(555) 123-4567</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wo-form-group">
+                    <label class="wo-form-label">Select Line Items to Include</label>
+                    <div class="wo-checkbox-list" id="wo-crew-items-list">
+                        <label class="wo-checkbox-item">
+                            <input type="checkbox" checked data-item-id="101" />
+                            <span class="wo-checkbox-item-text">9FT Heavy Texture</span>
+                            <span class="wo-checkbox-item-area">Guest Bedroom</span>
+                        </label>
+                        <label class="wo-checkbox-item">
+                            <input type="checkbox" checked data-item-id="102" />
+                            <span class="wo-checkbox-item-text">9FT Ceiling Smooth</span>
+                            <span class="wo-checkbox-item-area">Guest Bedroom</span>
+                        </label>
+                        <label class="wo-checkbox-item">
+                            <input type="checkbox" checked data-item-id="103" />
+                            <span class="wo-checkbox-item-text">Baseboard Trim</span>
+                            <span class="wo-checkbox-item-area">Guest Bedroom</span>
+                        </label>
+                        <label class="wo-checkbox-item">
+                            <input type="checkbox" checked data-item-id="201" />
+                            <span class="wo-checkbox-item-text">Accent Wall</span>
+                            <span class="wo-checkbox-item-area">Living Room</span>
+                        </label>
+                        <label class="wo-checkbox-item">
+                            <input type="checkbox" checked data-item-id="202" />
+                            <span class="wo-checkbox-item-text">Crown Molding</span>
+                            <span class="wo-checkbox-item-area">Living Room</span>
+                        </label>
+                        <label class="wo-checkbox-item">
+                            <input type="checkbox" data-item-id="301" />
+                            <span class="wo-checkbox-item-text">Cabinet Refinishing</span>
+                            <span class="wo-checkbox-item-area">Kitchen</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="wo-modal-actions">
+                    <button type="button" class="wo-btn wo-btn-secondary" id="wo-create-crew-cancel-btn">Cancel</button>
+                    <button type="button" class="wo-btn wo-btn-primary" id="wo-create-crew-confirm-btn">Create Crew WO</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rule 7: Product Change Modal -->
+        <div class="wo-modal-backdrop wo-product-change-modal" id="wo-product-change-modal">
+            <div class="wo-modal" style="max-width: 500px;">
+                <h4 class="wo-modal-title">Change Product</h4>
+                <p class="wo-modal-message">
+                    Select a replacement product for <strong id="wo-product-change-item-name"></strong>
+                </p>
+
+                <div class="wo-form-group">
+                    <label class="wo-form-label">Current Product</label>
+                    <div class="wo-current-product">
+                        <span class="wo-current-product-name" id="wo-current-product-name">Sherwin Williams Duration</span>
+                        <span class="wo-current-product-details" id="wo-current-product-details">SW7015 Repose Gray - Eggshell</span>
+                    </div>
+                </div>
+
+                <div class="wo-form-group">
+                    <label class="wo-form-label">Search Products</label>
+                    <input type="text" class="wo-form-input" id="wo-product-search" placeholder="Search by name, brand, or color..." />
+                </div>
+
+                <div class="wo-form-group">
+                    <label class="wo-form-label">Available Products</label>
+                    <div class="wo-product-list" id="wo-product-list">
+                        <label class="wo-product-option">
+                            <input type="radio" name="product-selection" value="prod-001" />
+                            <div class="wo-product-option-content">
+                                <span class="wo-product-option-name">Sherwin Williams Duration</span>
+                                <span class="wo-product-option-details">SW7015 Repose Gray - Eggshell</span>
+                            </div>
+                        </label>
+                        <label class="wo-product-option">
+                            <input type="radio" name="product-selection" value="prod-002" />
+                            <div class="wo-product-option-content">
+                                <span class="wo-product-option-name">Benjamin Moore Regal Select</span>
+                                <span class="wo-product-option-details">HC-172 Revere Pewter - Eggshell</span>
+                            </div>
+                        </label>
+                        <label class="wo-product-option">
+                            <input type="radio" name="product-selection" value="prod-003" />
+                            <div class="wo-product-option-content">
+                                <span class="wo-product-option-name">Sherwin Williams Emerald</span>
+                                <span class="wo-product-option-details">SW7016 Mindful Gray - Satin</span>
+                            </div>
+                        </label>
+                        <label class="wo-product-option">
+                            <input type="radio" name="product-selection" value="prod-004" />
+                            <div class="wo-product-option-content">
+                                <span class="wo-product-option-name">PPG Diamond</span>
+                                <span class="wo-product-option-details">PPG1025-3 Whiskers - Eggshell</span>
+                            </div>
+                        </label>
+                        <label class="wo-product-option">
+                            <input type="radio" name="product-selection" value="prod-005" />
+                            <div class="wo-product-option-content">
+                                <span class="wo-product-option-name">Behr Marquee</span>
+                                <span class="wo-product-option-details">N520-2 Silver Bullet - Matte</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="wo-modal-actions">
+                    <button type="button" class="wo-btn wo-btn-secondary" id="wo-product-change-cancel-btn">Cancel</button>
+                    <button type="button" class="wo-btn wo-btn-primary" id="wo-product-change-confirm-btn">Change Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+    <script>
+    (function($) {
+        'use strict';
+
+        var WorkOrderEditor = {
+            state: {
+                isEditMode: false,
+                hasUnsavedChanges: false,
+                pendingDelete: null,
+                pendingProductChange: null,
+                currentCrew: 'all',
+                crews: {
+                    'all': {
+                        name: 'Master Work Order (All Items)',
+                        items: [101, 102, 103, 201, 202, 301],
+                        notes: 'Be sure to keep the back room door closed. There is a massive dog in there and he just can\'t wait to get his big old paws in some paint and help out! 🐕 🐾 🎨'
+                    },
+                    'painting': {
+                        name: 'Painting Crew',
+                        items: [101, 102, 103, 201],
+                        notes: 'PAINTING CREW: Start with the Guest Bedroom first thing in the morning while the homeowner is at work. Use drop cloths on all hardwood floors. The accent wall in the Living Room needs 2 coats minimum - the existing color is dark red.'
+                    },
+                    'cabinets': {
+                        name: 'Cabinet Team',
+                        items: [301],
+                        notes: 'CABINET TEAM: All cabinet doors have been removed and are in the garage for spraying. Use the side door to access - homeowner left it unlocked. Label all doors with painter\'s tape before removing hardware. Hardware goes in labeled bags in the pantry.'
+                    }
+                }
+            },
+            elements: {},
+
+            init: function() {
+                this.cacheElements();
+                this.bindEvents();
+                this.initSortable();
+                console.log('WorkOrderEditor Demo initialized');
+            },
+
+            cacheElements: function() {
+                this.elements = {
+                    page: $('.wo-edit-page'),
+                    editModeBtn: $('#wo-edit-mode-btn'),
+                    saveModeBtn: $('#wo-save-mode-btn'),
+                    cancelModeBtn: $('#wo-cancel-mode-btn'),
+                    areasContainer: $('#wo-areas-container'),
+                    lineItemsTables: $('.wo-line-items-tbody'),
+                    unsavedIndicator: $('.wo-unsaved-indicator'),
+                    toast: $('#wo-toast'),
+                    deleteModal: $('#wo-delete-modal'),
+                    createCrewModal: $('#wo-create-crew-modal'),
+                    productChangeModal: $('#wo-product-change-modal'),
+                    crewTabs: $('.wo-crew-tab'),
+                    grandTotals: {
+                        prep: $('#wo-grand-prep-hours'),
+                        working: $('#wo-grand-working-hours'),
+                        total: $('#wo-grand-total-hours')
+                    }
+                };
+            },
+
+            bindEvents: function() {
+                var self = this;
+
+                // Edit mode toggle
+                this.elements.editModeBtn.on('click', function() {
+                    self.enterEditMode();
+                });
+
+                this.elements.saveModeBtn.on('click', function() {
+                    self.saveChanges();
+                });
+
+                this.elements.cancelModeBtn.on('click', function() {
+                    self.cancelEditMode();
+                });
+
+                // Field editing
+                $(document).on('blur', '.wo-field-input', function() {
+                    self.handleFieldChange($(this));
+                });
+
+                $(document).on('keydown', '.wo-field-input', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        $(this).blur();
+                    }
+                });
+
+                // Area name editing
+                $(document).on('blur', '.wo-area-title-input', function() {
+                    self.handleAreaNameChange($(this));
+                });
+
+                // Delete button
+                $(document).on('click', '.wo-delete-btn', function(e) {
+                    e.preventDefault();
+                    var $row = $(this).closest('.wo-line-item-row');
+                    self.showDeleteConfirmation($row);
+                });
+
+                // Delete modal buttons
+                $('#wo-delete-confirm-btn').on('click', function() {
+                    self.confirmDelete();
+                });
+
+                $('#wo-delete-cancel-btn').on('click', function() {
+                    self.hideDeleteModal();
+                });
+
+                // Collapse toggle
+                $(document).on('click', '.wo-area-collapse-btn', function() {
+                    self.toggleAreaCollapse($(this));
+                });
+
+                // Rule 3: Settings toggles (show/hide hours)
+                $(document).on('click', '.wo-toggle', function() {
+                    self.handleSettingToggle($(this));
+                });
+
+                // Rule 8: Date input changes
+                $(document).on('change', '.wo-date-input', function() {
+                    self.handleDateChange($(this));
+                });
+
+                // Crew notes change
+                $(document).on('blur', '#wo-crew-notes-input', function() {
+                    self.handleCrewNotesChange();
+                });
+
+                // Rule 2: Crew tab switching
+                $(document).on('click', '.wo-crew-tab', function() {
+                    self.switchCrew($(this));
+                });
+
+                // Rule 2: Add new crew button
+                $('#wo-add-crew-btn').on('click', function() {
+                    self.showCreateCrewModal();
+                });
+
+                // Rule 2: Create crew modal buttons
+                $('#wo-create-crew-confirm-btn').on('click', function() {
+                    self.createNewCrew();
+                });
+
+                $('#wo-create-crew-cancel-btn').on('click', function() {
+                    self.hideCreateCrewModal();
+                });
+
+                // Assign-to tab switching (Crew Type / Subcontractor)
+                $('.wo-assign-tab').on('click', function() {
+                    var assignType = $(this).data('assign-type');
+
+                    // Update active tab
+                    $('.wo-assign-tab').removeClass('is-active');
+                    $(this).addClass('is-active');
+
+                    // Show corresponding panel
+                    $('.wo-assign-panel').removeClass('is-active');
+                    if (assignType === 'crew') {
+                        $('#wo-crew-panel').addClass('is-active');
+                    } else {
+                        $('#wo-subcontractor-panel').addClass('is-active');
+                    }
+                });
+
+                // Subcontractor selection
+                $('#wo-subcontractor-select').on('change', function() {
+                    var selectedValue = $(this).val();
+                    var $info = $('#wo-subcontractor-info');
+
+                    if (selectedValue) {
+                        // Show subcontractor info card
+                        var subcontractorData = {
+                            'sub-001': { name: 'Joe Smith', initials: 'JS', specialty: 'Pressure Washing', contact: '(555) 123-4567' },
+                            'sub-002': { name: "Mike's Painting LLC", initials: 'MP', specialty: 'Interior/Exterior Painting', contact: '(555) 234-5678' },
+                            'sub-003': { name: 'Sarah Johnson', initials: 'SJ', specialty: 'Cabinet Specialist', contact: '(555) 345-6789' },
+                            'sub-004': { name: 'Rodriguez Drywall Services', initials: 'RD', specialty: 'Drywall & Texturing', contact: '(555) 456-7890' },
+                            'sub-005': { name: 'Elite Trim Carpentry', initials: 'ET', specialty: 'Trim & Finish Carpentry', contact: '(555) 567-8901' }
+                        };
+
+                        var data = subcontractorData[selectedValue];
+                        if (data) {
+                            $info.find('.wo-subcontractor-avatar').text(data.initials);
+                            $info.find('#wo-selected-sub-name').text(data.name);
+                            $info.find('#wo-selected-sub-specialty').text(data.specialty);
+                            $info.find('#wo-selected-sub-contact').text(data.contact);
+                            $info.removeClass('is-hidden');
+                        }
+                    } else {
+                        $info.addClass('is-hidden');
+                    }
+                });
+
+                // Rule 5: Media item toggle (only in edit mode)
+                $(document).on('click', '.wo-media-item', function(e) {
+                    if (!self.state.isEditMode) return;
+                    e.preventDefault();
+                    self.toggleMediaVisibility($(this));
+                });
+
+                // Rule 7: Product change button
+                $(document).on('click', '.wo-product-change-btn', function(e) {
+                    e.preventDefault();
+                    var $row = $(this).closest('.wo-line-item-row');
+                    self.showProductChangeModal($row);
+                });
+
+                // Rule 7: Product change modal buttons
+                $('#wo-product-change-confirm-btn').on('click', function() {
+                    self.confirmProductChange();
+                });
+
+                $('#wo-product-change-cancel-btn').on('click', function() {
+                    self.hideProductChangeModal();
+                });
+
+                // Rule 7: Product search
+                $('#wo-product-search').on('input', function() {
+                    self.filterProducts($(this).val());
+                });
+            },
+
+            // CRITICAL: Working drag-and-drop implementation
+            initSortable: function() {
+                var self = this;
+
+                // Sortable for areas (drag entire sections)
+                this.elements.areasContainer.sortable({
+                    items: '.wo-area-card',
+                    handle: '.wo-area-drag-handle',
+                    placeholder: 'wo-area-card ui-sortable-placeholder',
+                    tolerance: 'pointer',
+                    cursor: 'grabbing',
+                    opacity: 0.9,
+                    revert: 200,
+                    scroll: true,
+                    disabled: true,
+
+                    start: function(event, ui) {
+                        ui.placeholder.height(ui.item.outerHeight());
+                    },
+
+                    stop: function(event, ui) {
+                        self.showToast('Areas reordered', 'success');
+                        self.markAsChanged();
+                    }
+                });
+
+                // Sortable for line items within each area
+                this.elements.lineItemsTables.each(function() {
+                    var $tbody = $(this);
+
+                    $tbody.sortable({
+                        items: '.wo-line-item-row:not(.is-deleted)',
+                        handle: '.wo-drag-handle',
+                        placeholder: 'wo-line-item-row ui-sortable-placeholder',
+                        tolerance: 'pointer',
+                        cursor: 'grabbing',
+                        opacity: 0.9,
+                        revert: 150,
+                        scroll: true,
+                        disabled: true,
+                        helper: function(e, tr) {
+                            var $originals = tr.children();
+                            var $helper = tr.clone();
+                            $helper.children().each(function(index) {
+                                $(this).width($originals.eq(index).outerWidth());
+                            });
+                            return $helper;
+                        },
+
+                        start: function(event, ui) {
+                            ui.placeholder.height(ui.item.outerHeight());
+                        },
+
+                        stop: function(event, ui) {
+                            self.showToast('Line items reordered', 'success');
+                            self.markAsChanged();
+                        }
+                    });
+                });
+
+                console.log('Sortable initialized for areas and line items');
+            },
+
+            enableSortable: function() {
+                this.elements.areasContainer.sortable('enable');
+                this.elements.lineItemsTables.sortable('enable');
+            },
+
+            disableSortable: function() {
+                this.elements.areasContainer.sortable('disable');
+                this.elements.lineItemsTables.sortable('disable');
+            },
+
+            enterEditMode: function() {
+                this.state.isEditMode = true;
+                this.elements.page.addClass('wo-edit-mode');
+                this.elements.editModeBtn.hide();
+                this.elements.saveModeBtn.show();
+                this.elements.cancelModeBtn.show();
+                this.enableSortable();
+                this.showToast('Edit mode enabled - drag handles are now active', 'success');
+            },
+
+            exitEditMode: function() {
+                this.state.isEditMode = false;
+                this.elements.page.removeClass('wo-edit-mode');
+                this.elements.editModeBtn.show();
+                this.elements.saveModeBtn.hide();
+                this.elements.cancelModeBtn.hide();
+                this.disableSortable();
+            },
+
+            cancelEditMode: function() {
+                if (this.state.hasUnsavedChanges) {
+                    if (!confirm('You have unsaved changes. Are you sure you want to cancel?')) {
+                        return;
+                    }
+                }
+                location.reload();
+            },
+
+            saveChanges: function() {
+                // In demo mode, just show success and exit edit mode
+                this.showToast('All changes saved successfully!', 'success');
+                this.state.hasUnsavedChanges = false;
+                this.elements.unsavedIndicator.removeClass('is-visible');
+                this.exitEditMode();
+            },
+
+            handleFieldChange: function($input) {
+                var $row = $input.closest('.wo-line-item-row');
+                var fieldName = $input.data('field');
+                var newValue = $input.val();
+                var originalValue = $input.data('original-value');
+
+                if (newValue === String(originalValue)) return;
+
+                // Mark as modified
+                $input.addClass('is-modified');
+                $input.data('original-value', newValue);
+
+                // Update display value (now targeting .wo-field-number inside .wo-field-value)
+                var $fieldValue = $row.find('.wo-field-value[data-field="' + fieldName + '"]');
+                var $fieldNumber = $fieldValue.find('.wo-field-number');
+                if ($fieldNumber.length) {
+                    $fieldNumber.text(this.formatFieldValue(fieldName, newValue));
+                } else {
+                    $fieldValue.text(this.formatFieldValue(fieldName, newValue));
+                }
+
+                // Update totals
+                if (fieldName === 'PrepHrs' || fieldName === 'WorkingHrs') {
+                    this.updateRowTotalHours($row);
+                    this.recalculateAllTotals();
+                }
+
+                this.markAsChanged();
+            },
+
+            handleAreaNameChange: function($input) {
+                var $card = $input.closest('.wo-area-card');
+                var newName = $input.val().trim();
+
+                if (!newName) {
+                    $input.val($input.data('original-value'));
+                    return;
+                }
+
+                $card.find('.wo-area-title').text(newName);
+                $input.data('original-value', newName);
+                this.markAsChanged();
+            },
+
+            formatFieldValue: function(fieldName, value) {
+                if (fieldName === 'PrepHrs' || fieldName === 'WorkingHrs') {
+                    return parseFloat(value).toFixed(2);
+                }
+                return value;
+            },
+
+            updateRowTotalHours: function($row) {
+                var prepHrs = parseFloat($row.find('.wo-field-input[data-field="PrepHrs"]').val()) || 0;
+                var workingHrs = parseFloat($row.find('.wo-field-input[data-field="WorkingHrs"]').val()) || 0;
+                var totalHrs = prepHrs + workingHrs;
+                $row.find('.wo-total-hrs').text(totalHrs.toFixed(2));
+            },
+
+            recalculateAllTotals: function() {
+                var self = this;
+                var grandPrep = 0, grandWorking = 0, grandTotal = 0;
+
+                $('.wo-area-card').each(function() {
+                    var $card = $(this);
+                    var areaPrep = 0, areaWorking = 0, areaTotal = 0;
+
+                    $card.find('.wo-line-item-row:not(.is-deleted)').each(function() {
+                        var $row = $(this);
+                        var prep = parseFloat($row.find('.wo-field-input[data-field="PrepHrs"]').val()) || 0;
+                        var working = parseFloat($row.find('.wo-field-input[data-field="WorkingHrs"]').val()) || 0;
+                        areaPrep += prep;
+                        areaWorking += working;
+                        areaTotal += (prep + working);
+                    });
+
+                    $card.find('.wo-area-prep-total').text(areaPrep.toFixed(2));
+                    $card.find('.wo-area-working-total').text(areaWorking.toFixed(2));
+                    $card.find('.wo-area-total').text(areaTotal.toFixed(2));
+                    $card.find('.wo-area-summary .wo-area-total').text(areaTotal.toFixed(2));
+
+                    grandPrep += areaPrep;
+                    grandWorking += areaWorking;
+                    grandTotal += areaTotal;
+                });
+
+                this.elements.grandTotals.prep.text(grandPrep.toFixed(2));
+                this.elements.grandTotals.working.text(grandWorking.toFixed(2));
+                this.elements.grandTotals.total.text(grandTotal.toFixed(2));
+            },
+
+            showDeleteConfirmation: function($row) {
+                var itemName = $row.find('.wo-item-name').text();
+                this.state.pendingDelete = { $row: $row, itemName: itemName };
+                $('#wo-delete-item-name').text(itemName);
+                this.elements.deleteModal.addClass('is-visible');
+            },
+
+            hideDeleteModal: function() {
+                this.elements.deleteModal.removeClass('is-visible');
+                this.state.pendingDelete = null;
+            },
+
+            confirmDelete: function() {
+                var self = this;
+                var pending = this.state.pendingDelete;
+                if (!pending) return;
+
+                this.hideDeleteModal();
+
+                pending.$row.addClass('is-deleted').slideUp(300, function() {
+                    self.recalculateAllTotals();
+                });
+
+                this.showToast('Item deleted', 'success');
+                this.markAsChanged();
+            },
+
+            toggleAreaCollapse: function($btn) {
+                var $card = $btn.closest('.wo-area-card');
+                var $body = $card.find('.wo-area-body');
+                var $icon = $btn.find('svg');
+
+                $body.toggleClass('collapsed');
+                $icon.css('transform', $body.hasClass('collapsed') ? 'rotate(-90deg)' : 'rotate(0)');
+            },
+
+            // Rule 3: Handle settings toggle (show/hide hours)
+            handleSettingToggle: function($toggle) {
+                var setting = $toggle.data('setting');
+                var isActive = $toggle.hasClass('is-active');
+
+                // Toggle the state
+                $toggle.toggleClass('is-active');
+                isActive = !isActive;
+
+                // Apply the setting
+                if (setting === 'showHours') {
+                    if (isActive) {
+                        this.elements.page.removeClass('wo-hours-hidden');
+                        this.showToast('Hours columns shown', 'success');
+                    } else {
+                        this.elements.page.addClass('wo-hours-hidden');
+                        this.showToast('Hours columns hidden', 'success');
+                    }
+                } else if (setting === 'showTotals') {
+                    if (isActive) {
+                        $('.wo-grand-totals, .wo-area-totals').show();
+                        this.showToast('Totals shown', 'success');
+                    } else {
+                        $('.wo-grand-totals, .wo-area-totals').hide();
+                        this.showToast('Totals hidden', 'success');
+                    }
+                } else if (setting === 'showProducts') {
+                    if (isActive) {
+                        $('.wo-item-details').show();
+                        this.showToast('Product details shown', 'success');
+                    } else {
+                        $('.wo-item-details').hide();
+                        this.showToast('Product details hidden', 'success');
+                    }
+                }
+
+                this.markAsChanged();
+            },
+
+            // Rule 8: Handle date changes
+            handleDateChange: function($input) {
+                var $dateItem = $input.closest('.wo-date-item');
+                var $displayValue = $dateItem.find('.wo-date-value');
+                var newValue = $input.val();
+
+                if (newValue) {
+                    // Format the date for display
+                    var date = new Date(newValue + 'T00:00:00');
+                    var formatted = date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    $displayValue.text(formatted).removeClass('is-empty');
+                } else {
+                    $displayValue.text('Not Set').addClass('is-empty');
+                }
+
+                this.markAsChanged();
+                this.showToast('Date updated', 'success');
+            },
+
+            // Handle crew notes change
+            handleCrewNotesChange: function() {
+                var $textarea = $('#wo-crew-notes-input');
+                var $display = $('#wo-crew-notes-display');
+                var newValue = $textarea.val();
+
+                // Update display value
+                $display.text(newValue);
+
+                // Save to current crew's notes in state
+                var currentCrew = this.state.currentCrew;
+                if (this.state.crews[currentCrew]) {
+                    this.state.crews[currentCrew].notes = newValue;
+                }
+
+                this.markAsChanged();
+                var crewName = currentCrew === 'all' ? 'All Crews' : this.state.crews[currentCrew].name;
+                this.showToast(crewName + ' notes updated', 'success');
+            },
+
+            // Rule 2: Switch between crew Work Orders
+            switchCrew: function($tab) {
+                var crewId = $tab.data('crew-id');
+                var crew = this.state.crews[crewId];
+
+                if (!crew) return;
+
+                // Update active tab
+                $('.wo-crew-tab').removeClass('is-active');
+                $tab.addClass('is-active');
+
+                this.state.currentCrew = crewId;
+
+                // Update info display
+                $('#wo-crew-name').text(crew.name);
+                $('#wo-crew-items').text(crew.items.length + ' line items');
+
+                // Filter visible line items
+                this.filterLineItemsByCrew(crew.items);
+
+                // Recalculate totals
+                this.recalculateAllTotals();
+
+                // Update hours display
+                var totalHours = 0;
+                $('.wo-line-item-row:not(.is-excluded):not(.is-deleted)').each(function() {
+                    var prep = parseFloat($(this).find('.wo-field-input[data-field="PrepHrs"]').val()) || 0;
+                    var working = parseFloat($(this).find('.wo-field-input[data-field="WorkingHrs"]').val()) || 0;
+                    totalHours += prep + working;
+                });
+                $('#wo-crew-hours').text(totalHours.toFixed(2) + ' hrs');
+
+                // Update crew notes display
+                var notesLabel = crewId === 'all' ? '(All Crews)' : '(' + crew.name + ')';
+                $('#wo-crew-notes-for').text(notesLabel);
+                $('#wo-crew-notes-display').text(crew.notes || '');
+                $('#wo-crew-notes-input').val(crew.notes || '');
+
+                this.showToast('Switched to ' + crew.name, 'success');
+            },
+
+            // Filter line items based on crew assignment
+            filterLineItemsByCrew: function(itemIds) {
+                var self = this;
+
+                $('.wo-line-item-row').each(function() {
+                    var $row = $(this);
+                    var itemId = $row.data('line-item-id');
+
+                    if (itemIds.indexOf(itemId) === -1) {
+                        $row.addClass('is-excluded');
+                    } else {
+                        $row.removeClass('is-excluded');
+                    }
+                });
+
+                // Show/hide areas that have no visible items
+                $('.wo-area-card').each(function() {
+                    var $card = $(this);
+                    var visibleItems = $card.find('.wo-line-item-row:not(.is-excluded):not(.is-deleted)').length;
+
+                    if (visibleItems === 0 && self.state.currentCrew !== 'all') {
+                        $card.addClass('is-excluded').hide();
+                    } else {
+                        $card.removeClass('is-excluded').show();
+                    }
+                });
+            },
+
+            // Show create crew modal
+            showCreateCrewModal: function() {
+                // Reset form
+                $('#wo-new-crew-name').val('');
+                $('#wo-subcontractor-select').val('');
+                $('#wo-subcontractor-info').addClass('is-hidden');
+                $('#wo-crew-items-list input[type="checkbox"]').prop('checked', true);
+
+                // Reset to Crew Type tab
+                $('.wo-assign-tab').removeClass('is-active');
+                $('.wo-assign-tab[data-assign-type="crew"]').addClass('is-active');
+                $('.wo-assign-panel').removeClass('is-active');
+                $('#wo-crew-panel').addClass('is-active');
+
+                this.elements.createCrewModal.addClass('is-visible');
+            },
+
+            // Hide create crew modal
+            hideCreateCrewModal: function() {
+                this.elements.createCrewModal.removeClass('is-visible');
+            },
+
+            // Create new crew Work Order
+            createNewCrew: function() {
+                // Determine if using crew type or subcontractor
+                var isSubcontractor = $('.wo-assign-tab[data-assign-type="subcontractor"]').hasClass('is-active');
+                var crewName = '';
+                var subcontractorId = null;
+
+                if (isSubcontractor) {
+                    // Using subcontractor
+                    subcontractorId = $('#wo-subcontractor-select').val();
+                    if (!subcontractorId) {
+                        this.showToast('Please select a subcontractor', 'error');
+                        return;
+                    }
+                    crewName = $('#wo-subcontractor-select option:selected').text();
+                } else {
+                    // Using crew type
+                    crewName = $('#wo-new-crew-name').val().trim();
+                    if (!crewName) {
+                        this.showToast('Please enter a crew name', 'error');
+                        return;
+                    }
+                }
+
+                // Get selected items
+                var selectedItems = [];
+                $('#wo-crew-items-list input[type="checkbox"]:checked').each(function() {
+                    selectedItems.push(parseInt($(this).data('item-id')));
+                });
+
+                if (selectedItems.length === 0) {
+                    this.showToast('Please select at least one item', 'error');
+                    return;
+                }
+
+                // Generate crew ID
+                var crewId = crewName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+                // Add to state
+                this.state.crews[crewId] = {
+                    name: crewName,
+                    items: selectedItems,
+                    notes: '',
+                    isSubcontractor: isSubcontractor,
+                    subcontractorId: subcontractorId
+                };
+
+                // Add tab with different styling for subcontractors
+                var tabIcon = isSubcontractor ?
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' : '';
+
+                var $newTab = $('<button type="button" class="wo-crew-tab' + (isSubcontractor ? ' is-subcontractor' : '') + '" data-crew-id="' + crewId + '">' +
+                    tabIcon +
+                    '<span>' + crewName + '</span>' +
+                    '<span class="wo-crew-tab-count">' + selectedItems.length + '</span>' +
+                    '</button>');
+
+                $('#wo-add-crew-btn').before($newTab);
+
+                this.hideCreateCrewModal();
+                var successMsg = isSubcontractor ?
+                    'Assigned Work Order to ' + crewName :
+                    'Created "' + crewName + '" Work Order';
+                this.showToast(successMsg, 'success');
+
+                // Switch to the new crew
+                this.switchCrew($newTab);
+            },
+
+            // Rule 5: Toggle media visibility
+            toggleMediaVisibility: function($mediaItem) {
+                $mediaItem.toggleClass('is-hidden');
+
+                var isHidden = $mediaItem.hasClass('is-hidden');
+                var mediaId = $mediaItem.data('media-id');
+
+                if (isHidden) {
+                    this.showToast('Media item hidden from Work Order', 'success');
+                } else {
+                    this.showToast('Media item will show on Work Order', 'success');
+                }
+
+                this.markAsChanged();
+            },
+
+            // Rule 7: Show product change modal
+            showProductChangeModal: function($row) {
+                var itemName = $row.find('.wo-item-name').text();
+                var currentProduct = $row.find('.wo-item-details').text().trim() || 'No product assigned';
+
+                this.state.pendingProductChange = { $row: $row };
+
+                $('#wo-product-change-item-name').text(itemName);
+                $('#wo-current-product-name').text(currentProduct.split(' - ')[0] || currentProduct);
+                $('#wo-current-product-details').text(currentProduct);
+
+                // Clear any previous selection
+                $('#wo-product-list input[type="radio"]').prop('checked', false);
+                $('#wo-product-search').val('');
+                this.filterProducts('');
+
+                this.elements.productChangeModal.addClass('is-visible');
+            },
+
+            // Rule 7: Hide product change modal
+            hideProductChangeModal: function() {
+                this.elements.productChangeModal.removeClass('is-visible');
+                this.state.pendingProductChange = null;
+            },
+
+            // Rule 7: Confirm product change
+            confirmProductChange: function() {
+                var self = this;
+                var pending = this.state.pendingProductChange;
+                if (!pending) return;
+
+                var $selectedProduct = $('#wo-product-list input[type="radio"]:checked');
+                if ($selectedProduct.length === 0) {
+                    this.showToast('Please select a product', 'error');
+                    return;
+                }
+
+                var $option = $selectedProduct.closest('.wo-product-option');
+                var productName = $option.find('.wo-product-option-name').text();
+                var productDetails = $option.find('.wo-product-option-details').text();
+                var newProductText = productName + ' (' + productDetails.split(' - ')[1] + ')';
+
+                // Update ONLY the product text, preserving badges
+                var $itemDetails = pending.$row.find('.wo-item-details');
+
+                // Check if there's already a product-text span, if not create one
+                var $productText = $itemDetails.find('.wo-product-text');
+                if ($productText.length === 0) {
+                    // First time - wrap existing product text in a span
+                    // Get the last text node (product text after badges)
+                    var contents = $itemDetails.contents();
+                    var lastTextNode = null;
+                    contents.each(function() {
+                        if (this.nodeType === 3 && $.trim(this.nodeValue)) {
+                            lastTextNode = this;
+                        }
+                    });
+
+                    if (lastTextNode) {
+                        // Replace text node with span
+                        var $newSpan = $('<span class="wo-product-text"></span>').text(newProductText);
+                        $(lastTextNode).replaceWith($newSpan);
+                    } else {
+                        // No text node found, append new span
+                        $itemDetails.append($('<span class="wo-product-text"></span>').text(newProductText));
+                    }
+                } else {
+                    // Already has product-text span, just update it
+                    $productText.text(newProductText);
+                }
+
+                // Add visual indicator that product was changed
+                pending.$row.addClass('wo-product-changed');
+
+                this.hideProductChangeModal();
+                this.showToast('Product changed to ' + productName, 'success');
+                this.markAsChanged();
+            },
+
+            // Rule 7: Filter products in modal
+            filterProducts: function(searchTerm) {
+                searchTerm = searchTerm.toLowerCase();
+
+                $('.wo-product-option').each(function() {
+                    var $option = $(this);
+                    var name = $option.find('.wo-product-option-name').text().toLowerCase();
+                    var details = $option.find('.wo-product-option-details').text().toLowerCase();
+
+                    if (name.indexOf(searchTerm) !== -1 || details.indexOf(searchTerm) !== -1 || searchTerm === '') {
+                        $option.show();
+                    } else {
+                        $option.hide();
+                    }
+                });
+            },
+
+            markAsChanged: function() {
+                this.state.hasUnsavedChanges = true;
+                this.elements.unsavedIndicator.addClass('is-visible');
+            },
+
+            showToast: function(message, type) {
+                var $toast = this.elements.toast;
+                $toast
+                    .removeClass('wo-toast-success wo-toast-error')
+                    .addClass('wo-toast-' + type)
+                    .text(message)
+                    .addClass('is-visible');
+
+                setTimeout(function() {
+                    $toast.removeClass('is-visible');
+                }, 3000);
+            }
+        };
+
+        $(document).ready(function() {
+            WorkOrderEditor.init();
+        });
+
+    })(jQuery);
+    </script>
+</body>
+</html>
