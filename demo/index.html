@@ -2319,6 +2319,87 @@
             color: var(--dj-gray-700);
         }
 
+        /* ============================================================
+           Work Order Options Panel - Consolidated Admin Controls
+           ============================================================ */
+        .wo-options-panel {
+            background-color: white;
+            border-radius: var(--dj-border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .wo-options-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-options-title svg {
+            color: var(--dj-primary);
+        }
+
+        .wo-options-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--dj-gray-200);
+        }
+
+        .wo-btn-outline {
+            padding: 8px 16px;
+            border: 2px solid var(--dj-primary);
+            border-radius: var(--dj-border-radius);
+            background-color: white;
+            color: var(--dj-primary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--dj-transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .wo-btn-outline:hover {
+            background-color: var(--dj-primary-bg);
+        }
+
+        .wo-options-section {
+            margin-bottom: 16px;
+        }
+
+        .wo-options-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .wo-options-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dj-gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 10px 0;
+        }
+
+        /* Display options only visible in edit mode */
+        .wo-display-options {
+            display: none;
+            padding-top: 16px;
+            border-top: 1px solid var(--dj-gray-200);
+        }
+
+        .wo-edit-mode .wo-display-options {
+            display: block;
+        }
+
         /* Crew assignment checkboxes on line items */
         .wo-crew-assign {
             display: none;
@@ -2937,51 +3018,107 @@
             </div>
 
             <!-- Rule 2: Crew-Specific Work Orders -->
-            <div class="wo-crew-selector">
-                <div class="wo-crew-header">
-                    <h4 class="wo-crew-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            <!-- Work Order Options - Consolidated Admin Controls -->
+            <div class="wo-options-panel">
+                <h4 class="wo-options-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Work Order Options
+                </h4>
+
+                <!-- Action Buttons Row -->
+                <div class="wo-options-actions">
+                    <button type="button" class="wo-btn wo-btn-primary" id="wo-edit-mode-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
-                        Work Order Versions
-                    </h4>
-                </div>
-                <div class="wo-crew-tabs">
-                    <button type="button" class="wo-crew-tab is-active" data-crew-id="all">
-                        <span>Master (All Items)</span>
-                        <span class="wo-crew-tab-count">6</span>
+                        Edit Work Order
                     </button>
-                    <button type="button" class="wo-crew-tab" data-crew-id="painting">
-                        <span>Painting Crew</span>
-                        <span class="wo-crew-tab-count">4</span>
-                    </button>
-                    <button type="button" class="wo-crew-tab" data-crew-id="cabinets">
-                        <span>Cabinet Team</span>
-                        <span class="wo-crew-tab-count">1</span>
-                    </button>
-                    <button type="button" class="wo-crew-add-btn" id="wo-add-crew-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
+
+                    <button type="button" class="wo-btn wo-btn-success" id="wo-save-mode-btn" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
                         </svg>
-                        New Crew WO
+                        Save Changes
+                    </button>
+
+                    <button type="button" class="wo-btn wo-btn-secondary" id="wo-cancel-mode-btn" style="display: none;">
+                        Cancel
+                    </button>
+
+                    <button type="button" class="wo-btn wo-btn-outline" id="wo-update-proposal-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Update Proposal
                     </button>
                 </div>
-                <div class="wo-crew-info" id="wo-crew-info">
-                    <div class="wo-crew-info-item">
-                        <span class="wo-crew-info-label">Viewing:</span>
-                        <span class="wo-crew-info-value" id="wo-crew-name">Master Work Order (All Items)</span>
+
+                <!-- Work Order Versions -->
+                <div class="wo-options-section">
+                    <h5 class="wo-options-section-title">Work Order Versions</h5>
+                    <div class="wo-crew-tabs">
+                        <button type="button" class="wo-crew-tab is-active" data-crew-id="all">
+                            <span>Master (All Items)</span>
+                            <span class="wo-crew-tab-count">6</span>
+                        </button>
+                        <button type="button" class="wo-crew-tab" data-crew-id="painting">
+                            <span>Painting Crew</span>
+                            <span class="wo-crew-tab-count">4</span>
+                        </button>
+                        <button type="button" class="wo-crew-tab" data-crew-id="cabinets">
+                            <span>Cabinet Team</span>
+                            <span class="wo-crew-tab-count">1</span>
+                        </button>
+                        <button type="button" class="wo-crew-add-btn" id="wo-add-crew-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            New Crew WO
+                        </button>
                     </div>
-                    <div class="wo-crew-info-item">
-                        <span class="wo-crew-info-label">Items:</span>
-                        <span class="wo-crew-info-value" id="wo-crew-items">6 line items</span>
+                    <div class="wo-crew-info" id="wo-crew-info">
+                        <div class="wo-crew-info-item">
+                            <span class="wo-crew-info-label">Viewing:</span>
+                            <span class="wo-crew-info-value" id="wo-crew-name">Master Work Order (All Items)</span>
+                        </div>
+                        <div class="wo-crew-info-item">
+                            <span class="wo-crew-info-label">Items:</span>
+                            <span class="wo-crew-info-value" id="wo-crew-items">6 line items</span>
+                        </div>
+                        <div class="wo-crew-info-item">
+                            <span class="wo-crew-info-label">Hours:</span>
+                            <span class="wo-crew-info-value" id="wo-crew-hours">16.20 hrs</span>
+                        </div>
                     </div>
-                    <div class="wo-crew-info-item">
-                        <span class="wo-crew-info-label">Hours:</span>
-                        <span class="wo-crew-info-value" id="wo-crew-hours">16.20 hrs</span>
+                </div>
+
+                <!-- Display Options -->
+                <div class="wo-options-section wo-display-options">
+                    <h5 class="wo-options-section-title">Display Options</h5>
+                    <div class="wo-settings-grid">
+                        <div class="wo-setting-item">
+                            <div class="wo-toggle is-active" id="wo-toggle-hours" data-setting="showHours"></div>
+                            <span class="wo-setting-label">Show Hours</span>
+                        </div>
+                        <div class="wo-setting-item">
+                            <div class="wo-toggle is-active" id="wo-toggle-totals" data-setting="showTotals"></div>
+                            <span class="wo-setting-label">Show Totals</span>
+                        </div>
+                        <div class="wo-setting-item">
+                            <div class="wo-toggle is-active" id="wo-toggle-products" data-setting="showProducts"></div>
+                            <span class="wo-setting-label">Show Product Details</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3057,49 +3194,6 @@
                 <div class="wo-crew-notes-body">
                     <div class="wo-crew-notes-content" id="wo-crew-notes-display">Be sure to keep the back room door closed. There is a massive dog in there and he just can't wait to get his big old paws in some paint and help out! 🐕 🐾 🎨</div>
                     <textarea class="wo-crew-notes-textarea" id="wo-crew-notes-input" placeholder="Add notes for the crew working on this job...">Be sure to keep the back room door closed. There is a massive dog in there and he just can't wait to get his big old paws in some paint and help out! 🐕 🐾 🎨</textarea>
-                </div>
-            </div>
-
-            <!-- Edit Mode Controls -->
-            <div class="wo-edit-controls">
-                <button type="button" class="wo-btn wo-btn-primary" id="wo-edit-mode-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                    </svg>
-                    Edit Work Order
-                </button>
-
-                <button type="button" class="wo-btn wo-btn-success" id="wo-save-mode-btn" style="display: none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg>
-                    Save Changes
-                </button>
-
-                <button type="button" class="wo-btn wo-btn-secondary" id="wo-cancel-mode-btn" style="display: none;">
-                    Cancel
-                </button>
-            </div>
-
-            <!-- Rule 3: Work Order Settings Panel (visible in edit mode) -->
-            <div class="wo-settings-panel">
-                <h4 class="wo-settings-title">Work Order Display Options</h4>
-                <div class="wo-settings-grid">
-                    <div class="wo-setting-item">
-                        <div class="wo-toggle is-active" id="wo-toggle-hours" data-setting="showHours"></div>
-                        <span class="wo-setting-label">Show Hours</span>
-                    </div>
-                    <div class="wo-setting-item">
-                        <div class="wo-toggle is-active" id="wo-toggle-totals" data-setting="showTotals"></div>
-                        <span class="wo-setting-label">Show Totals</span>
-                    </div>
-                    <div class="wo-setting-item">
-                        <div class="wo-toggle is-active" id="wo-toggle-products" data-setting="showProducts"></div>
-                        <span class="wo-setting-label">Show Product Details</span>
-                    </div>
                 </div>
             </div>
 
@@ -3216,15 +3310,7 @@
                                             <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="1" value="1" title="Coats" />
                                         </div>
                                     </td>
-                                    <td class="wo-col-actions">
-                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                            Update Proposal
-                                        </button>
-                                    </td>
+                                    <td class="wo-col-actions"></td>
                                 </tr>
                                 <tr class="wo-line-item-row wo-package-item" data-line-item-id="102" data-package-id="pkg-001">
                                     <td class="wo-col-drag">
@@ -3285,15 +3371,7 @@
                                             <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
                                         </div>
                                     </td>
-                                    <td class="wo-col-actions">
-                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                            Update Proposal
-                                        </button>
-                                    </td>
+                                    <td class="wo-col-actions"></td>
                                 </tr>
                                 <tr class="wo-line-item-row" data-line-item-id="103">
                                     <td class="wo-col-drag">
@@ -3354,15 +3432,7 @@
                                             <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
                                         </div>
                                     </td>
-                                    <td class="wo-col-actions">
-                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                            Update Proposal
-                                        </button>
-                                    </td>
+                                    <td class="wo-col-actions"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3488,15 +3558,7 @@
                                             <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
                                         </div>
                                     </td>
-                                    <td class="wo-col-actions">
-                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                            Update Proposal
-                                        </button>
-                                    </td>
+                                    <td class="wo-col-actions"></td>
                                 </tr>
                                 <tr class="wo-line-item-row" data-line-item-id="202">
                                     <td class="wo-col-drag">
@@ -3557,15 +3619,7 @@
                                             <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="2" value="2" title="Coats" />
                                         </div>
                                     </td>
-                                    <td class="wo-col-actions">
-                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                            Update Proposal
-                                        </button>
-                                    </td>
+                                    <td class="wo-col-actions"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3701,15 +3755,7 @@
                                             <input type="number" step="1" min="0" max="100" class="wo-field-input" data-field="Coats" data-original-value="3" value="3" title="Coats" />
                                         </div>
                                     </td>
-                                    <td class="wo-col-actions">
-                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                            Update Proposal
-                                        </button>
-                                    </td>
+                                    <td class="wo-col-actions"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4449,11 +4495,10 @@
                     self.toggleMediaVisibility($(this));
                 });
 
-                // Update Proposal button
-                $(document).on('click', '.wo-update-proposal-btn', function(e) {
+                // Update Proposal button (in options panel)
+                $('#wo-update-proposal-btn').on('click', function(e) {
                     e.preventDefault();
-                    var $row = $(this).closest('.wo-line-item-row');
-                    self.showUpdateProposalModal($row);
+                    self.showUpdateProposalModal();
                 });
 
                 // Update Proposal modal buttons
@@ -5001,9 +5046,8 @@
             },
 
             // Show Update Proposal modal
-            showUpdateProposalModal: function($row) {
-                var itemName = $row.find('.wo-item-name').text();
-                $('#wo-update-item-name').text(itemName);
+            showUpdateProposalModal: function() {
+                $('#wo-update-item-name').text('Work Order Items');
                 this.elements.updateProposalModal.addClass('is-visible');
             },
 
