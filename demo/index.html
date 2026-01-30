@@ -367,6 +367,68 @@
             vertical-align: middle;
         }
 
+        /* Change Order REMOVED - item removed via change order */
+        .wo-line-item-row.wo-co-removed {
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.06), transparent);
+            opacity: 0.7;
+        }
+
+        .wo-line-item-row.wo-co-removed .wo-item-name {
+            text-decoration: line-through;
+            color: var(--dj-gray-400);
+        }
+
+        .wo-line-item-row.wo-co-removed .wo-item-details {
+            text-decoration: line-through;
+            color: var(--dj-gray-400);
+        }
+
+        .wo-line-item-row.wo-co-removed .wo-field-value {
+            text-decoration: line-through;
+            color: var(--dj-gray-400);
+        }
+
+        .wo-line-item-row.wo-co-removed .wo-field-number,
+        .wo-line-item-row.wo-co-removed .wo-field-unit,
+        .wo-line-item-row.wo-co-removed .wo-total-hrs {
+            color: var(--dj-gray-400);
+        }
+
+        /* CO Removed Badge */
+        .wo-co-removed-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background-color: var(--dj-danger-bg);
+            border: 1px solid var(--dj-danger-border);
+            color: var(--dj-danger);
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+
+        .wo-co-removed-badge svg {
+            width: 11px;
+            height: 11px;
+        }
+
+        /* Hide Update Proposal button for removed items */
+        .wo-line-item-row.wo-co-removed .wo-update-proposal-btn {
+            display: none !important;
+        }
+
+        /* Area-level removal */
+        .wo-area-card.wo-co-removed .wo-area-header {
+            background-color: var(--dj-gray-400);
+        }
+
+        .wo-area-card.wo-co-removed .wo-area-title {
+            text-decoration: line-through;
+        }
+
         .wo-area-collapse-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -2719,7 +2781,8 @@
                                         </button>
                                     </td>
                                 </tr>
-                                <tr class="wo-line-item-row" data-line-item-id="103">
+                                <!-- CO REMOVED ITEM: This line item was removed via Change Order #83670 -->
+                                <tr class="wo-line-item-row wo-co-removed" data-line-item-id="103" data-co-removed="83670" data-co-removed-date="01/22/2026">
                                     <td class="wo-col-drag">
                                         <div class="wo-drag-handle" title="Drag to reorder">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -2733,7 +2796,17 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-item">
-                                        <div class="wo-item-name">Baseboard Trim</div>
+                                        <div class="wo-item-name">
+                                            Baseboard Trim
+                                            <span class="wo-co-removed-badge" title="Removed via Change Order #83670 on 01/22/2026">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                </svg>
+                                                CO Removed
+                                            </span>
+                                        </div>
                                         <div class="wo-item-details">
                                             <span class="wo-item-type-badge">Trim</span>
                                             Sherwin Williams ProClassic (Semi-Gloss)
@@ -2779,13 +2852,7 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-actions">
-                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                            </svg>
-                                            Update Proposal
-                                        </button>
+                                        <!-- No actions for removed items -->
                                     </td>
                                 </tr>
                             </tbody>
