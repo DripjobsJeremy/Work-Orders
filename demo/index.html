@@ -650,22 +650,19 @@
             display: flex;
         }
 
-        /* In edit mode, hide the value display for editable fields (that have edit wrapper) */
-        /* Note: Hours (prep/working) and Coats are READ-ONLY - changes must come from proposal */
-        .wo-edit-mode .wo-col-unit .wo-field-value {
-            display: none;
-        }
-
-        /* Hours and Coats columns are always read-only */
+        /* All line item data is READ-ONLY - changes must come from proposal */
+        /* Hours, Coats, and Unit columns are never editable on work order */
         .wo-col-prep .wo-field-edit-wrapper,
         .wo-col-working .wo-field-edit-wrapper,
-        .wo-col-coats .wo-field-edit-wrapper {
+        .wo-col-coats .wo-field-edit-wrapper,
+        .wo-col-unit .wo-field-edit-wrapper {
             display: none !important;
         }
 
         .wo-edit-mode .wo-col-prep .wo-field-value,
         .wo-edit-mode .wo-col-working .wo-field-value,
-        .wo-edit-mode .wo-col-coats .wo-field-value {
+        .wo-edit-mode .wo-col-coats .wo-field-value,
+        .wo-edit-mode .wo-col-unit .wo-field-value {
             display: flex !important;
         }
 
@@ -726,13 +723,15 @@
         /* Read-only fields from proposal indicator */
         .wo-edit-mode .wo-col-prep,
         .wo-edit-mode .wo-col-working,
-        .wo-edit-mode .wo-col-coats {
+        .wo-edit-mode .wo-col-coats,
+        .wo-edit-mode .wo-col-unit {
             position: relative;
         }
 
         .wo-edit-mode .wo-col-prep .wo-field-value,
         .wo-edit-mode .wo-col-working .wo-field-value,
-        .wo-edit-mode .wo-col-coats .wo-field-value {
+        .wo-edit-mode .wo-col-coats .wo-field-value,
+        .wo-edit-mode .wo-col-unit .wo-field-value {
             background-color: var(--dj-gray-100);
             border-radius: 4px;
             cursor: not-allowed;
@@ -754,52 +753,86 @@
         }
 
         /* Delete Button */
+        /* Delete button - disabled, changes must come from proposal */
         .wo-delete-btn {
-            display: none;
-            width: 28px;
-            height: 28px;
-            padding: 0;
-            background-color: transparent;
-            border: 1px solid var(--dj-danger);
-            border-radius: 4px;
-            color: var(--dj-danger);
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            transition: var(--dj-transition);
+            display: none !important;
         }
 
-        .wo-delete-btn:hover {
-            background-color: var(--dj-danger);
-            color: white;
-        }
-
-        .wo-edit-mode .wo-delete-btn {
-            display: inline-flex;
-        }
-
-        /* Product Change Button */
+        /* Product Change Button - hidden, replaced by Update Proposal */
         .wo-product-change-btn {
-            display: none;
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: var(--dj-radius-sm);
-            background-color: var(--dj-gray-100);
-            color: var(--dj-gray-600);
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s ease;
+            display: none !important;
         }
 
-        .wo-product-change-btn:hover {
+        /* Update Proposal Pill Button */
+        .wo-update-proposal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background-color: var(--dj-primary-bg);
+            border: 1px solid var(--dj-primary-border);
+            border-radius: 20px;
+            color: var(--dj-primary);
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--dj-transition);
+            white-space: nowrap;
+        }
+
+        .wo-update-proposal-btn:hover {
             background-color: var(--dj-primary);
+            border-color: var(--dj-primary);
             color: white;
         }
 
-        .wo-edit-mode .wo-product-change-btn {
-            display: inline-flex;
+        .wo-update-proposal-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Update Proposal Modal */
+        .wo-update-proposal-modal .wo-modal {
+            max-width: 450px;
+        }
+
+        .wo-info-banner {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: var(--dj-border-radius);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .wo-info-banner svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .wo-info-banner strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .wo-info-banner p {
+            margin: 0;
+            color: inherit;
+            opacity: 0.9;
+        }
+
+        .wo-info-banner-warning {
+            background-color: var(--dj-warning-bg);
+            border: 1px solid var(--dj-warning-border);
+            color: #92400E;
+        }
+
+        .wo-info-banner-warning svg {
+            color: var(--dj-warning);
+        }
+
+        .wo-update-item-message {
+            margin-top: 16px;
         }
 
         .wo-col-actions {
@@ -2598,18 +2631,12 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-actions">
-                                        <button type="button" class="wo-product-change-btn" title="Change product">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="17 8 12 3 7 8"></polyline>
-                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
-                                        </button>
-                                        <button type="button" class="wo-delete-btn" title="Delete item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
+                                            Update Proposal
                                         </button>
                                     </td>
                                 </tr>
@@ -2679,18 +2706,12 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-actions">
-                                        <button type="button" class="wo-product-change-btn" title="Change product">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="17 8 12 3 7 8"></polyline>
-                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
-                                        </button>
-                                        <button type="button" class="wo-delete-btn" title="Delete item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
+                                            Update Proposal
                                         </button>
                                     </td>
                                 </tr>
@@ -2754,18 +2775,12 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-actions">
-                                        <button type="button" class="wo-product-change-btn" title="Change product">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="17 8 12 3 7 8"></polyline>
-                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
-                                        </button>
-                                        <button type="button" class="wo-delete-btn" title="Delete item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
+                                            Update Proposal
                                         </button>
                                     </td>
                                 </tr>
@@ -2894,18 +2909,12 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-actions">
-                                        <button type="button" class="wo-product-change-btn" title="Change product">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="17 8 12 3 7 8"></polyline>
-                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
-                                        </button>
-                                        <button type="button" class="wo-delete-btn" title="Delete item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
+                                            Update Proposal
                                         </button>
                                     </td>
                                 </tr>
@@ -2969,18 +2978,12 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-actions">
-                                        <button type="button" class="wo-product-change-btn" title="Change product">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="17 8 12 3 7 8"></polyline>
-                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
-                                        </button>
-                                        <button type="button" class="wo-delete-btn" title="Delete item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
+                                            Update Proposal
                                         </button>
                                     </td>
                                 </tr>
@@ -3119,18 +3122,12 @@
                                         </div>
                                     </td>
                                     <td class="wo-col-actions">
-                                        <button type="button" class="wo-product-change-btn" title="Change product">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                <polyline points="17 8 12 3 7 8"></polyline>
-                                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        <button type="button" class="wo-update-proposal-btn" title="Update in Proposal">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                             </svg>
-                                        </button>
-                                        <button type="button" class="wo-delete-btn" title="Delete item">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                                            </svg>
+                                            Update Proposal
                                         </button>
                                     </td>
                                 </tr>
@@ -3393,71 +3390,38 @@
             </div>
         </div>
 
-        <!-- Rule 7: Product Change Modal -->
-        <div class="wo-modal-backdrop wo-product-change-modal" id="wo-product-change-modal">
-            <div class="wo-modal" style="max-width: 500px;">
-                <h4 class="wo-modal-title">Change Product</h4>
-                <p class="wo-modal-message">
-                    Select a replacement product for <strong id="wo-product-change-item-name"></strong>
-                </p>
+        <!-- Update Proposal Modal -->
+        <div class="wo-modal-backdrop wo-update-proposal-modal" id="wo-update-proposal-modal">
+            <div class="wo-modal">
+                <h4 class="wo-modal-title">Update Proposal</h4>
 
-                <div class="wo-form-group">
-                    <label class="wo-form-label">Current Product</label>
-                    <div class="wo-current-product">
-                        <span class="wo-current-product-name" id="wo-current-product-name">Sherwin Williams Duration</span>
-                        <span class="wo-current-product-details" id="wo-current-product-details">SW7015 Repose Gray - Eggshell</span>
+                <!-- Content for accepted proposals (show change order guidance) -->
+                <div class="wo-proposal-accepted-content" id="wo-proposal-accepted-content">
+                    <div class="wo-info-banner wo-info-banner-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <div>
+                            <strong>This proposal has been accepted.</strong>
+                            <p>To make changes to line items, products, quantities, or hours, you'll need to create a Change Order in the Proposal Builder.</p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="wo-form-group">
-                    <label class="wo-form-label">Search Products</label>
-                    <input type="text" class="wo-form-input" id="wo-product-search" placeholder="Search by name, brand, or color..." />
-                </div>
-
-                <div class="wo-form-group">
-                    <label class="wo-form-label">Available Products</label>
-                    <div class="wo-product-list" id="wo-product-list">
-                        <label class="wo-product-option">
-                            <input type="radio" name="product-selection" value="prod-001" />
-                            <div class="wo-product-option-content">
-                                <span class="wo-product-option-name">Sherwin Williams Duration</span>
-                                <span class="wo-product-option-details">SW7015 Repose Gray - Eggshell</span>
-                            </div>
-                        </label>
-                        <label class="wo-product-option">
-                            <input type="radio" name="product-selection" value="prod-002" />
-                            <div class="wo-product-option-content">
-                                <span class="wo-product-option-name">Benjamin Moore Regal Select</span>
-                                <span class="wo-product-option-details">HC-172 Revere Pewter - Eggshell</span>
-                            </div>
-                        </label>
-                        <label class="wo-product-option">
-                            <input type="radio" name="product-selection" value="prod-003" />
-                            <div class="wo-product-option-content">
-                                <span class="wo-product-option-name">Sherwin Williams Emerald</span>
-                                <span class="wo-product-option-details">SW7016 Mindful Gray - Satin</span>
-                            </div>
-                        </label>
-                        <label class="wo-product-option">
-                            <input type="radio" name="product-selection" value="prod-004" />
-                            <div class="wo-product-option-content">
-                                <span class="wo-product-option-name">PPG Diamond</span>
-                                <span class="wo-product-option-details">PPG1025-3 Whiskers - Eggshell</span>
-                            </div>
-                        </label>
-                        <label class="wo-product-option">
-                            <input type="radio" name="product-selection" value="prod-005" />
-                            <div class="wo-product-option-content">
-                                <span class="wo-product-option-name">Behr Marquee</span>
-                                <span class="wo-product-option-details">N520-2 Silver Bullet - Matte</span>
-                            </div>
-                        </label>
+                    <p class="wo-modal-message wo-update-item-message">
+                        Updating <strong id="wo-update-item-name">9FT Heavy Texture</strong>
+                    </p>
+                    <div class="wo-modal-actions">
+                        <button type="button" class="wo-btn wo-btn-secondary" id="wo-update-proposal-cancel-btn">Cancel</button>
+                        <button type="button" class="wo-btn wo-btn-primary" id="wo-goto-proposal-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            Go to Proposal Builder
+                        </button>
                     </div>
-                </div>
-
-                <div class="wo-modal-actions">
-                    <button type="button" class="wo-btn wo-btn-secondary" id="wo-product-change-cancel-btn">Cancel</button>
-                    <button type="button" class="wo-btn wo-btn-primary" id="wo-product-change-confirm-btn">Change Product</button>
                 </div>
             </div>
         </div>
@@ -3518,7 +3482,7 @@
                     toast: $('#wo-toast'),
                     deleteModal: $('#wo-delete-modal'),
                     createCrewModal: $('#wo-create-crew-modal'),
-                    productChangeModal: $('#wo-product-change-modal'),
+                    updateProposalModal: $('#wo-update-proposal-modal'),
                     crewTabs: $('.wo-crew-tab'),
                     grandTotals: {
                         prep: $('#wo-grand-prep-hours'),
@@ -3668,25 +3632,23 @@
                     self.toggleMediaVisibility($(this));
                 });
 
-                // Rule 7: Product change button
-                $(document).on('click', '.wo-product-change-btn', function(e) {
+                // Update Proposal button
+                $(document).on('click', '.wo-update-proposal-btn', function(e) {
                     e.preventDefault();
                     var $row = $(this).closest('.wo-line-item-row');
-                    self.showProductChangeModal($row);
+                    self.showUpdateProposalModal($row);
                 });
 
-                // Rule 7: Product change modal buttons
-                $('#wo-product-change-confirm-btn').on('click', function() {
-                    self.confirmProductChange();
+                // Update Proposal modal buttons
+                $('#wo-update-proposal-cancel-btn').on('click', function() {
+                    self.hideUpdateProposalModal();
                 });
 
-                $('#wo-product-change-cancel-btn').on('click', function() {
-                    self.hideProductChangeModal();
-                });
-
-                // Rule 7: Product search
-                $('#wo-product-search').on('input', function() {
-                    self.filterProducts($(this).val());
+                $('#wo-goto-proposal-btn').on('click', function() {
+                    // In production, this would navigate to the Proposal Builder
+                    self.hideUpdateProposalModal();
+                    self.showToast('Navigating to Proposal Builder...', 'success');
+                    // window.location.href = '/proposal-builder?job=' + jobId;
                 });
             },
 
@@ -4183,100 +4145,16 @@
                 this.markAsChanged();
             },
 
-            // Rule 7: Show product change modal
-            showProductChangeModal: function($row) {
+            // Show Update Proposal modal
+            showUpdateProposalModal: function($row) {
                 var itemName = $row.find('.wo-item-name').text();
-                var currentProduct = $row.find('.wo-item-details').text().trim() || 'No product assigned';
-
-                this.state.pendingProductChange = { $row: $row };
-
-                $('#wo-product-change-item-name').text(itemName);
-                $('#wo-current-product-name').text(currentProduct.split(' - ')[0] || currentProduct);
-                $('#wo-current-product-details').text(currentProduct);
-
-                // Clear any previous selection
-                $('#wo-product-list input[type="radio"]').prop('checked', false);
-                $('#wo-product-search').val('');
-                this.filterProducts('');
-
-                this.elements.productChangeModal.addClass('is-visible');
+                $('#wo-update-item-name').text(itemName);
+                this.elements.updateProposalModal.addClass('is-visible');
             },
 
-            // Rule 7: Hide product change modal
-            hideProductChangeModal: function() {
-                this.elements.productChangeModal.removeClass('is-visible');
-                this.state.pendingProductChange = null;
-            },
-
-            // Rule 7: Confirm product change
-            confirmProductChange: function() {
-                var self = this;
-                var pending = this.state.pendingProductChange;
-                if (!pending) return;
-
-                var $selectedProduct = $('#wo-product-list input[type="radio"]:checked');
-                if ($selectedProduct.length === 0) {
-                    this.showToast('Please select a product', 'error');
-                    return;
-                }
-
-                var $option = $selectedProduct.closest('.wo-product-option');
-                var productName = $option.find('.wo-product-option-name').text();
-                var productDetails = $option.find('.wo-product-option-details').text();
-                var newProductText = productName + ' (' + productDetails.split(' - ')[1] + ')';
-
-                // Update ONLY the product text, preserving badges
-                var $itemDetails = pending.$row.find('.wo-item-details');
-
-                // Check if there's already a product-text span, if not create one
-                var $productText = $itemDetails.find('.wo-product-text');
-                if ($productText.length === 0) {
-                    // First time - wrap existing product text in a span
-                    // Get the last text node (product text after badges)
-                    var contents = $itemDetails.contents();
-                    var lastTextNode = null;
-                    contents.each(function() {
-                        if (this.nodeType === 3 && $.trim(this.nodeValue)) {
-                            lastTextNode = this;
-                        }
-                    });
-
-                    if (lastTextNode) {
-                        // Replace text node with span
-                        var $newSpan = $('<span class="wo-product-text"></span>').text(newProductText);
-                        $(lastTextNode).replaceWith($newSpan);
-                    } else {
-                        // No text node found, append new span
-                        $itemDetails.append($('<span class="wo-product-text"></span>').text(newProductText));
-                    }
-                } else {
-                    // Already has product-text span, just update it
-                    $productText.text(newProductText);
-                }
-
-                // Add visual indicator that product was changed
-                pending.$row.addClass('wo-product-changed');
-
-                this.hideProductChangeModal();
-                this.showToast('Product changed to ' + productName, 'success');
-                this.markAsChanged();
-            },
-
-            // Rule 7: Filter products in modal
-            filterProducts: function(searchTerm) {
-                searchTerm = searchTerm.toLowerCase();
-
-                $('.wo-product-option').each(function() {
-                    var $option = $(this);
-                    var name = $option.find('.wo-product-option-name').text().toLowerCase();
-                    var details = $option.find('.wo-product-option-details').text().toLowerCase();
-
-                    if (name.indexOf(searchTerm) !== -1 || details.indexOf(searchTerm) !== -1 || searchTerm === '') {
-                        $option.show();
-                    } else {
-                        $option.hide();
-                    }
-                });
+            // Hide Update Proposal modal
+            hideUpdateProposalModal: function() {
+                this.elements.updateProposalModal.removeClass('is-visible');
             },
 
             markAsChanged: function() {
