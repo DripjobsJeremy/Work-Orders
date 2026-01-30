@@ -763,9 +763,9 @@
             display: none !important;
         }
 
-        /* Update Proposal Pill Button */
+        /* Update Proposal Pill Button - only visible in edit mode */
         .wo-update-proposal-btn {
-            display: inline-flex;
+            display: none;
             align-items: center;
             gap: 4px;
             padding: 4px 10px;
@@ -778,6 +778,10 @@
             cursor: pointer;
             transition: var(--dj-transition);
             white-space: nowrap;
+        }
+
+        .wo-edit-mode .wo-update-proposal-btn {
+            display: inline-flex;
         }
 
         .wo-update-proposal-btn:hover {
