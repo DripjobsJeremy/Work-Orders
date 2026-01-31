@@ -2368,7 +2368,153 @@
             color: var(--dj-primary);
         }
 
-        /* Horizontal Timeline Flow */
+        /* Compact Timeline Summary */
+        .wo-timeline-compact {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .wo-timeline-current {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .wo-timeline-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wo-timeline-status-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .wo-timeline-status-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .wo-timeline-status-icon.status-scheduled {
+            background-color: #F3E8FF;
+            color: #7C3AED;
+        }
+
+        .wo-timeline-status-icon.status-in-progress {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .wo-timeline-status-icon.status-completed {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .wo-timeline-status-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .wo-timeline-stage-label {
+            font-size: 11px;
+            color: var(--dj-gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .wo-timeline-stage-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dj-gray-800);
+        }
+
+        /* Progress Dots */
+        .wo-timeline-progress {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .wo-timeline-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--dj-gray-200);
+            transition: all 0.2s ease;
+        }
+
+        .wo-timeline-dot.is-complete {
+            background-color: var(--dj-primary);
+        }
+
+        .wo-timeline-dot.is-current {
+            background-color: var(--dj-primary);
+            width: 10px;
+            height: 10px;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        .wo-timeline-dot.is-pending {
+            background-color: var(--dj-gray-200);
+            border: 1px dashed var(--dj-gray-400);
+        }
+
+        /* Expand Toggle Button */
+        .wo-timeline-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            background: none;
+            border: 1px solid var(--dj-gray-200);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--dj-gray-600);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .wo-timeline-toggle:hover {
+            background-color: var(--dj-gray-50);
+            border-color: var(--dj-gray-300);
+        }
+
+        .wo-timeline-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .wo-timeline-expanded .wo-timeline-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        /* Expanded Timeline View */
+        .wo-timeline-full {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, margin-top 0.3s ease, padding-top 0.3s ease;
+        }
+
+        .wo-timeline-expanded .wo-timeline-full {
+            max-height: 400px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--dj-gray-100);
+        }
+
+        /* Horizontal Timeline Flow (in expanded view) */
         .wo-dates-flow {
             display: flex;
             align-items: center;
@@ -3538,45 +3684,85 @@
                         Project Timeline
                     </h4>
                 </div>
-                <div class="wo-dates-flow">
-                    <!-- Created -->
-                    <div class="wo-date-pill stage-created">
-                        <span class="wo-date-pill-label">Created:</span>
-                        <span class="wo-date-pill-value">Jan 15</span>
+
+                <!-- Compact Timeline Summary -->
+                <div class="wo-timeline-compact">
+                    <div class="wo-timeline-current">
+                        <div class="wo-timeline-status">
+                            <div class="wo-timeline-status-icon status-scheduled">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="wo-timeline-status-text">
+                                <span class="wo-timeline-stage-label">Current Stage</span>
+                                <span class="wo-timeline-stage-value">Scheduled: Feb 3 - 7</span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Dots -->
+                        <div class="wo-timeline-progress">
+                            <div class="wo-timeline-dot is-complete" title="Created"></div>
+                            <div class="wo-timeline-dot is-complete" title="Accepted"></div>
+                            <div class="wo-timeline-dot is-current" title="Scheduled"></div>
+                            <div class="wo-timeline-dot is-pending" title="Started"></div>
+                            <div class="wo-timeline-dot is-pending" title="Completed"></div>
+                        </div>
                     </div>
-                    <span class="wo-date-arrow">→</span>
-                    <!-- Accepted -->
-                    <div class="wo-date-pill stage-accepted">
-                        <span class="wo-date-pill-label">Accepted:</span>
-                        <span class="wo-date-pill-value">Jan 20</span>
-                    </div>
-                    <span class="wo-date-arrow">→</span>
-                    <!-- Scheduled -->
-                    <div class="wo-date-pill stage-scheduled">
-                        <span class="wo-date-pill-label">Scheduled:</span>
-                        <span class="wo-date-pill-value">Feb 3 - 7</span>
-                    </div>
-                    <span class="wo-date-arrow">→</span>
-                    <!-- Actual Start (editable) -->
-                    <div class="wo-date-pill stage-pending is-editable">
-                        <span class="wo-date-pill-label">Started:</span>
-                        <span class="wo-date-pill-value">Not Set</span>
-                        <input type="date" class="wo-date-input" value="" />
-                    </div>
-                    <span class="wo-date-arrow">→</span>
-                    <!-- Actual Completion (editable) -->
-                    <div class="wo-date-pill stage-pending is-editable">
-                        <span class="wo-date-pill-label">Completed:</span>
-                        <span class="wo-date-pill-value">Not Set</span>
-                        <input type="date" class="wo-date-input" value="" />
-                    </div>
+
+                    <button type="button" class="wo-timeline-toggle" id="wo-timeline-toggle">
+                        <span>Details</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
                 </div>
-                <!-- Change Orders (if any) -->
-                <div class="wo-change-orders">
-                    <span class="wo-date-label">Change Orders:</span>
-                    <div class="wo-date-pill stage-change-order">
-                        <span class="wo-date-pill-label">#83670</span>
-                        <span class="wo-date-pill-value">Jan 22</span>
+
+                <!-- Expandable Full Timeline -->
+                <div class="wo-timeline-full">
+                    <div class="wo-dates-flow">
+                        <!-- Created -->
+                        <div class="wo-date-pill stage-created">
+                            <span class="wo-date-pill-label">Created:</span>
+                            <span class="wo-date-pill-value">Jan 15</span>
+                        </div>
+                        <span class="wo-date-arrow">→</span>
+                        <!-- Accepted -->
+                        <div class="wo-date-pill stage-accepted">
+                            <span class="wo-date-pill-label">Accepted:</span>
+                            <span class="wo-date-pill-value">Jan 20</span>
+                        </div>
+                        <span class="wo-date-arrow">→</span>
+                        <!-- Scheduled -->
+                        <div class="wo-date-pill stage-scheduled">
+                            <span class="wo-date-pill-label">Scheduled:</span>
+                            <span class="wo-date-pill-value">Feb 3 - 7</span>
+                        </div>
+                        <span class="wo-date-arrow">→</span>
+                        <!-- Actual Start (editable) -->
+                        <div class="wo-date-pill stage-pending is-editable">
+                            <span class="wo-date-pill-label">Started:</span>
+                            <span class="wo-date-pill-value">Not Set</span>
+                            <input type="date" class="wo-date-input" value="" />
+                        </div>
+                        <span class="wo-date-arrow">→</span>
+                        <!-- Actual Completion (editable) -->
+                        <div class="wo-date-pill stage-pending is-editable">
+                            <span class="wo-date-pill-label">Completed:</span>
+                            <span class="wo-date-pill-value">Not Set</span>
+                            <input type="date" class="wo-date-input" value="" />
+                        </div>
+                    </div>
+                    <!-- Change Orders (if any) -->
+                    <div class="wo-change-orders">
+                        <span class="wo-date-label">Change Orders:</span>
+                        <div class="wo-date-pill stage-change-order">
+                            <span class="wo-date-pill-label">#83670</span>
+                            <span class="wo-date-pill-value">Jan 22</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4943,6 +5129,11 @@
                     self.toggleAreaCollapse($(this));
                 });
 
+                // Timeline expand/collapse toggle
+                $('#wo-timeline-toggle').on('click', function() {
+                    self.toggleTimeline();
+                });
+
                 // Rule 3: Settings toggles (show/hide hours)
                 $(document).on('click', '.wo-toggle', function() {
                     self.handleSettingToggle($(this));
@@ -5354,6 +5545,15 @@
 
                 $body.toggleClass('collapsed');
                 $icon.css('transform', $body.hasClass('collapsed') ? 'rotate(-90deg)' : 'rotate(0)');
+            },
+
+            toggleTimeline: function() {
+                var $card = $('.wo-dates-card');
+                $card.toggleClass('wo-timeline-expanded');
+
+                var $btn = $('#wo-timeline-toggle');
+                var isExpanded = $card.hasClass('wo-timeline-expanded');
+                $btn.find('span').text(isExpanded ? 'Hide' : 'Details');
             },
 
             // Rule 3: Handle settings toggle (show/hide hours)
