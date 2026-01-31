@@ -5296,7 +5296,7 @@
                     var $card = $(this);
                     var areaPrep = 0, areaWorking = 0, areaTotal = 0;
 
-                    $card.find('.wo-line-item-row:not(.is-deleted)').each(function() {
+                    $card.find('.wo-line-item-row:not(.is-deleted):not(.wo-co-removed)').each(function() {
                         var $row = $(this);
                         var prep = parseFloat($row.find('.wo-field-input[data-field="PrepHrs"]').val()) || 0;
                         var working = parseFloat($row.find('.wo-field-input[data-field="WorkingHrs"]').val()) || 0;
@@ -5780,6 +5780,9 @@
 
                     this.hideChangeOrderModal();
                     this.showToast('Change Order #' + coNumber + ' applied - ' + selectedItemIds.length + ' item(s) removed', 'success');
+
+                    // Recalculate all totals after removing items
+                    this.recalculateAllTotals();
                 }
             },
 
