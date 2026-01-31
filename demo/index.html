@@ -1407,6 +1407,170 @@
         }
 
         /* ============================================================
+           Send Work Order Modal
+           ============================================================ */
+        .wo-send-modal .wo-modal {
+            max-width: 500px;
+        }
+
+        .wo-send-method {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .wo-send-method-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border: 2px solid var(--dj-gray-200);
+            border-radius: var(--dj-border-radius);
+            background-color: white;
+            cursor: pointer;
+            transition: var(--dj-transition);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dj-gray-600);
+        }
+
+        .wo-send-method-option:hover {
+            border-color: var(--dj-primary-light);
+            color: var(--dj-primary);
+        }
+
+        .wo-send-method-option.is-active {
+            border-color: var(--dj-primary);
+            background-color: var(--dj-primary-bg);
+            color: var(--dj-primary);
+        }
+
+        .wo-send-method-option svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .wo-send-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--dj-gray-200);
+            margin-bottom: 20px;
+        }
+
+        .wo-send-tab {
+            flex: 1;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dj-gray-500);
+            cursor: pointer;
+            position: relative;
+            transition: var(--dj-transition);
+        }
+
+        .wo-send-tab:hover {
+            color: var(--dj-primary);
+        }
+
+        .wo-send-tab.is-active {
+            color: var(--dj-primary);
+        }
+
+        .wo-send-tab.is-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--dj-primary);
+        }
+
+        .wo-send-panel {
+            display: none;
+        }
+
+        .wo-send-panel.is-active {
+            display: block;
+        }
+
+        .wo-send-form-group {
+            margin-bottom: 16px;
+        }
+
+        .wo-send-form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--dj-gray-700);
+            margin-bottom: 6px;
+        }
+
+        .wo-send-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--dj-gray-300);
+            border-radius: var(--dj-border-radius);
+            font-size: 14px;
+            color: var(--dj-gray-700);
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .wo-send-select:focus {
+            outline: none;
+            border-color: var(--dj-primary);
+            box-shadow: 0 0 0 3px var(--dj-primary-bg);
+        }
+
+        .wo-send-multiselect {
+            border: 1px solid var(--dj-gray-200);
+            border-radius: var(--dj-border-radius);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .wo-send-multiselect-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--dj-gray-100);
+            cursor: pointer;
+            transition: var(--dj-transition);
+        }
+
+        .wo-send-multiselect-option:last-child {
+            border-bottom: none;
+        }
+
+        .wo-send-multiselect-option:hover {
+            background-color: var(--dj-gray-50);
+        }
+
+        .wo-send-multiselect-option.is-selected {
+            background-color: var(--dj-primary-bg);
+        }
+
+        .wo-send-multiselect-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--dj-primary);
+        }
+
+        .wo-send-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dj-gray-200);
+            margin-top: 20px;
+        }
+
+        /* ============================================================
            Area Totals Footer (inside table)
            ============================================================ */
         .wo-area-totals-footer {
@@ -2388,6 +2552,10 @@
             border-bottom: 1px solid var(--dj-gray-200);
         }
 
+        .wo-options-spacer {
+            flex: 1;
+        }
+
         .wo-btn-outline {
             padding: 8px 16px;
             border: 2px solid var(--dj-primary);
@@ -3095,6 +3263,16 @@
                             <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                         Update Proposal
+                    </button>
+
+                    <div class="wo-options-spacer"></div>
+
+                    <button type="button" class="wo-btn wo-btn-primary" id="wo-send-wo-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        Send Work Order
                     </button>
                 </div>
 
@@ -4342,6 +4520,127 @@
         </div>
     </div>
 
+    <!-- Send Work Order Modal -->
+    <div class="wo-modal-backdrop wo-send-modal" id="wo-send-modal">
+        <div class="wo-modal">
+            <h4 class="wo-modal-title">
+                <span>Send Work Order</span>
+                <button type="button" class="wo-modal-close" id="wo-send-close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </h4>
+
+            <!-- Send Method Selection -->
+            <div class="wo-send-form-group">
+                <label class="wo-send-form-label">Send Via</label>
+                <div class="wo-send-method">
+                    <button type="button" class="wo-send-method-option is-active" data-method="email">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Email
+                    </button>
+                    <button type="button" class="wo-send-method-option" data-method="sms">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        SMS
+                    </button>
+                    <button type="button" class="wo-send-method-option" data-method="both">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Both
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recipient Tabs -->
+            <div class="wo-send-tabs">
+                <button type="button" class="wo-send-tab is-active" data-tab="crew">Send to Crew</button>
+                <button type="button" class="wo-send-tab" data-tab="subcontractor">Send to Subcontractor(s)</button>
+            </div>
+
+            <!-- Send to Crew Panel -->
+            <div class="wo-send-panel is-active" id="wo-send-crew-panel">
+                <div class="wo-send-form-group">
+                    <label class="wo-send-form-label">Select Crew</label>
+                    <select class="wo-send-select" id="wo-send-crew-select">
+                        <option value="">Choose a crew...</option>
+                        <option value="int-paint">Int. Paint Crew</option>
+                        <option value="ext-paint">Ext. Paint Crew</option>
+                        <option value="roller">Roller Crew</option>
+                        <option value="prep">Prep Crew</option>
+                        <option value="commercial">Commercial Crew</option>
+                    </select>
+                </div>
+
+                <div class="wo-send-form-group">
+                    <label class="wo-send-form-label">Work Order Version</label>
+                    <select class="wo-send-select" id="wo-send-crew-version">
+                        <option value="master">Master (All Items)</option>
+                        <option value="painting">Painting Crew</option>
+                        <option value="cabinets">Cabinet Team</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Send to Subcontractor Panel -->
+            <div class="wo-send-panel" id="wo-send-sub-panel">
+                <div class="wo-send-form-group">
+                    <label class="wo-send-form-label">Select Subcontractor(s)</label>
+                    <div class="wo-send-multiselect" id="wo-send-sub-list">
+                        <label class="wo-send-multiselect-option">
+                            <input type="checkbox" value="mike-d" />
+                            <span>Mike's Drywall Services</span>
+                        </label>
+                        <label class="wo-send-multiselect-option">
+                            <input type="checkbox" value="pro-floor" />
+                            <span>Pro Floor Coatings</span>
+                        </label>
+                        <label class="wo-send-multiselect-option">
+                            <input type="checkbox" value="elite-cab" />
+                            <span>Elite Cabinet Refinishing</span>
+                        </label>
+                        <label class="wo-send-multiselect-option">
+                            <input type="checkbox" value="jasons-pressure" />
+                            <span>Jason's Pressure Washing</span>
+                        </label>
+                        <label class="wo-send-multiselect-option">
+                            <input type="checkbox" value="apex-stucco" />
+                            <span>Apex Stucco Repair</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="wo-send-form-group">
+                    <label class="wo-send-form-label">Work Order Version</label>
+                    <select class="wo-send-select" id="wo-send-sub-version">
+                        <option value="master">Master (All Items)</option>
+                        <option value="painting">Painting Crew</option>
+                        <option value="cabinets">Cabinet Team</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="wo-send-modal-footer">
+                <button type="button" class="wo-btn wo-btn-secondary" id="wo-send-cancel-btn">Cancel</button>
+                <button type="button" class="wo-btn wo-btn-primary" id="wo-send-submit-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -4399,6 +4698,7 @@
                     createCrewModal: $('#wo-create-crew-modal'),
                     updateProposalModal: $('#wo-update-proposal-modal'),
                     changeOrderModal: $('#wo-co-modal'),
+                    sendModal: $('#wo-send-modal'),
                     crewTabs: $('.wo-crew-tab'),
                     grandTotals: {
                         prep: $('#wo-grand-prep-hours'),
@@ -4602,6 +4902,41 @@
                 // Add Change Order button
                 $('#wo-add-change-order-btn').on('click', function() {
                     self.showChangeOrderModal();
+                });
+
+                // Send Work Order button
+                $('#wo-send-wo-btn').on('click', function() {
+                    self.showSendModal();
+                });
+
+                // Send modal close/cancel
+                $('#wo-send-close-btn, #wo-send-cancel-btn').on('click', function() {
+                    self.hideSendModal();
+                });
+
+                // Send method selection
+                $('.wo-send-method-option').on('click', function() {
+                    $('.wo-send-method-option').removeClass('is-active');
+                    $(this).addClass('is-active');
+                });
+
+                // Send tab switching
+                $('.wo-send-tab').on('click', function() {
+                    var tab = $(this).data('tab');
+                    $('.wo-send-tab').removeClass('is-active');
+                    $(this).addClass('is-active');
+                    $('.wo-send-panel').removeClass('is-active');
+                    $('#wo-send-' + tab + '-panel').addClass('is-active');
+                });
+
+                // Send multiselect toggle
+                $('.wo-send-multiselect-option input[type="checkbox"]').on('change', function() {
+                    $(this).closest('.wo-send-multiselect-option').toggleClass('is-selected', this.checked);
+                });
+
+                // Send submit button
+                $('#wo-send-submit-btn').on('click', function() {
+                    self.sendWorkOrder();
                 });
             },
 
@@ -5135,6 +5470,56 @@
             // Hide Change Order modal
             hideChangeOrderModal: function() {
                 this.elements.changeOrderModal.removeClass('is-visible');
+            },
+
+            // Show Send Work Order modal
+            showSendModal: function() {
+                // Reset form
+                $('#wo-send-crew-select').val('');
+                $('#wo-send-crew-version').val('master');
+                $('#wo-send-sub-version').val('master');
+                $('.wo-send-multiselect-option input[type="checkbox"]').prop('checked', false);
+                $('.wo-send-multiselect-option').removeClass('is-selected');
+                $('.wo-send-method-option').removeClass('is-active').first().addClass('is-active');
+                $('.wo-send-tab').removeClass('is-active').first().addClass('is-active');
+                $('.wo-send-panel').removeClass('is-active').first().addClass('is-active');
+                this.elements.sendModal.addClass('is-visible');
+            },
+
+            // Hide Send Work Order modal
+            hideSendModal: function() {
+                this.elements.sendModal.removeClass('is-visible');
+            },
+
+            // Send Work Order
+            sendWorkOrder: function() {
+                var self = this;
+                var activeTab = $('.wo-send-tab.is-active').data('tab');
+                var sendMethod = $('.wo-send-method-option.is-active').data('method');
+                var methodText = sendMethod === 'both' ? 'Email & SMS' : (sendMethod === 'email' ? 'Email' : 'SMS');
+
+                if (activeTab === 'crew') {
+                    var crewSelect = $('#wo-send-crew-select').val();
+                    if (!crewSelect) {
+                        this.showToast('Please select a crew', 'error');
+                        return;
+                    }
+                    var crewName = $('#wo-send-crew-select option:selected').text();
+                    this.hideSendModal();
+                    this.showToast('Work Order sent to ' + crewName + ' via ' + methodText, 'success');
+                } else {
+                    var selectedSubs = [];
+                    $('.wo-send-multiselect-option input[type="checkbox"]:checked').each(function() {
+                        selectedSubs.push($(this).closest('.wo-send-multiselect-option').find('span').text());
+                    });
+                    if (selectedSubs.length === 0) {
+                        this.showToast('Please select at least one subcontractor', 'error');
+                        return;
+                    }
+                    this.hideSendModal();
+                    var subText = selectedSubs.length === 1 ? selectedSubs[0] : selectedSubs.length + ' subcontractors';
+                    this.showToast('Work Order sent to ' + subText + ' via ' + methodText, 'success');
+                }
             },
 
             // Calculate Change Order total
