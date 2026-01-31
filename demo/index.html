@@ -2455,6 +2455,26 @@
             opacity: 1;
         }
 
+        /* Green checkmark for final Completed milestone */
+        .wo-milestone.is-complete-final .wo-milestone-dot {
+            background-color: #10B981;
+            border-color: #10B981;
+        }
+
+        .wo-milestone.is-complete-final .wo-milestone-dot svg {
+            opacity: 1;
+        }
+
+        .wo-milestone.is-complete-final .wo-milestone-label {
+            color: #047857;
+            font-weight: 500;
+        }
+
+        .wo-milestone.is-complete-final .wo-milestone-date {
+            color: #10B981;
+            font-weight: 600;
+        }
+
         .wo-milestone.is-current .wo-milestone-dot {
             background-color: white;
             border-color: var(--dj-primary);
@@ -5525,8 +5545,13 @@
                     // Update the display
                     $milestone.find('.wo-milestone-date').text(formattedDate);
 
-                    // Update milestone state
-                    $milestone.removeClass('is-pending').addClass('is-complete');
+                    // Update milestone state - green for Completed, blue for Started
+                    $milestone.removeClass('is-pending is-complete is-complete-final');
+                    if (milestoneType === 'completed') {
+                        $milestone.addClass('is-complete-final');
+                    } else {
+                        $milestone.addClass('is-complete');
+                    }
 
                     // Add checkmark to dot if not already there
                     if ($milestone.find('.wo-milestone-dot svg').length === 0) {
@@ -5545,7 +5570,7 @@
                 } else {
                     // Clear the date - revert to pending
                     $milestone.find('.wo-milestone-date').text('Set Date');
-                    $milestone.removeClass('is-complete').addClass('is-pending');
+                    $milestone.removeClass('is-complete is-complete-final').addClass('is-pending');
                     $milestone.find('.wo-milestone-dot').html('');
                     this.updateTimelineProgress();
                 }
@@ -5554,7 +5579,7 @@
             },
 
             updateTimelineProgress: function() {
-                var completedCount = $('.wo-milestone.is-complete').length;
+                var completedCount = $('.wo-milestone.is-complete, .wo-milestone.is-complete-final').length;
                 var currentCount = $('.wo-milestone.is-current').length;
                 var totalMilestones = 5;
 
