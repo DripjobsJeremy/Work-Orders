@@ -2368,105 +2368,173 @@
             color: var(--dj-primary);
         }
 
-        /* Compact Timeline Summary */
-        .wo-timeline-compact {
+        /* Progress Bar Timeline */
+        .wo-timeline-progress-bar {
+            margin-bottom: 8px;
+        }
+
+        .wo-timeline-track {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            padding: 0 8px;
         }
 
-        .wo-timeline-current {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
+        /* The background track line */
+        .wo-timeline-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 24px;
+            right: 24px;
+            height: 4px;
+            background-color: var(--dj-gray-200);
+            border-radius: 2px;
+            transform: translateY(-50%);
+            z-index: 0;
         }
 
-        .wo-timeline-status {
+        /* The filled progress line */
+        .wo-timeline-fill {
+            position: absolute;
+            top: 50%;
+            left: 24px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dj-primary), #4F46E5);
+            border-radius: 2px;
+            transform: translateY(-50%);
+            z-index: 1;
+            transition: width 0.4s ease;
+        }
+
+        /* Progress at different stages (0-100%) */
+        .wo-timeline-fill[data-progress="0"] { width: 0; }
+        .wo-timeline-fill[data-progress="25"] { width: calc(25% - 12px); }
+        .wo-timeline-fill[data-progress="50"] { width: calc(50% - 12px); }
+        .wo-timeline-fill[data-progress="75"] { width: calc(75% - 12px); }
+        .wo-timeline-fill[data-progress="100"] { width: calc(100% - 48px); }
+
+        /* Milestone points */
+        .wo-milestone {
+            position: relative;
+            z-index: 2;
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
         }
 
-        .wo-timeline-status-icon {
-            width: 36px;
-            height: 36px;
+        .wo-milestone-dot {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
+            background-color: white;
+            border: 3px solid var(--dj-gray-300);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .wo-timeline-status-icon svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .wo-timeline-status-icon.status-scheduled {
-            background-color: #F3E8FF;
-            color: #7C3AED;
-        }
-
-        .wo-timeline-status-icon.status-in-progress {
-            background-color: #DBEAFE;
-            color: #1E40AF;
-        }
-
-        .wo-timeline-status-icon.status-completed {
-            background-color: #D1FAE5;
-            color: #065F46;
-        }
-
-        .wo-timeline-status-text {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .wo-timeline-stage-label {
-            font-size: 11px;
-            color: var(--dj-gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .wo-timeline-stage-value {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--dj-gray-800);
-        }
-
-        /* Progress Dots */
-        .wo-timeline-progress {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .wo-timeline-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--dj-gray-200);
             transition: all 0.2s ease;
         }
 
-        .wo-timeline-dot.is-complete {
-            background-color: var(--dj-primary);
-        }
-
-        .wo-timeline-dot.is-current {
-            background-color: var(--dj-primary);
+        .wo-milestone-dot svg {
             width: 10px;
             height: 10px;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            opacity: 0;
+            color: white;
+            transition: opacity 0.2s ease;
         }
 
-        .wo-timeline-dot.is-pending {
-            background-color: var(--dj-gray-200);
-            border: 1px dashed var(--dj-gray-400);
+        .wo-milestone.is-complete .wo-milestone-dot {
+            background-color: var(--dj-primary);
+            border-color: var(--dj-primary);
+        }
+
+        .wo-milestone.is-complete .wo-milestone-dot svg {
+            opacity: 1;
+        }
+
+        .wo-milestone.is-current .wo-milestone-dot {
+            background-color: white;
+            border-color: var(--dj-primary);
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+        }
+
+        .wo-milestone.is-current .wo-milestone-dot::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background-color: var(--dj-primary);
+            border-radius: 50%;
+        }
+
+        .wo-milestone.is-pending .wo-milestone-dot {
+            border-style: dashed;
+            border-color: var(--dj-gray-300);
+        }
+
+        .wo-milestone-label {
+            font-size: 11px;
+            color: var(--dj-gray-500);
+            text-align: center;
+            white-space: nowrap;
+            transition: color 0.2s ease;
+        }
+
+        .wo-milestone.is-complete .wo-milestone-label,
+        .wo-milestone.is-current .wo-milestone-label {
+            color: var(--dj-gray-700);
+            font-weight: 500;
+        }
+
+        .wo-milestone-date {
+            font-size: 10px;
+            color: var(--dj-gray-400);
+            margin-top: -4px;
+        }
+
+        .wo-milestone.is-current .wo-milestone-date {
+            color: var(--dj-primary);
+            font-weight: 600;
+        }
+
+        /* Current stage highlight below progress bar */
+        .wo-timeline-current-stage {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--dj-gray-100);
+        }
+
+        .wo-current-stage-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wo-current-stage-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #F3E8FF, #EDE9FE);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #7C3AED;
+        }
+
+        .wo-current-stage-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .wo-current-stage-date {
+            font-size: 14px;
+            color: var(--dj-gray-600);
         }
 
         /* Expand Toggle Button */
@@ -3685,32 +3753,70 @@
                     </h4>
                 </div>
 
-                <!-- Compact Timeline Summary -->
-                <div class="wo-timeline-compact">
-                    <div class="wo-timeline-current">
-                        <div class="wo-timeline-status">
-                            <div class="wo-timeline-status-icon status-scheduled">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                <!-- Progress Bar Timeline -->
+                <div class="wo-timeline-progress-bar">
+                    <div class="wo-timeline-track">
+                        <!-- Filled progress line (50% = Scheduled stage, 3rd of 5) -->
+                        <div class="wo-timeline-fill" data-progress="50"></div>
+
+                        <!-- Milestone: Created -->
+                        <div class="wo-milestone is-complete">
+                            <div class="wo-milestone-dot">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
                             </div>
-                            <div class="wo-timeline-status-text">
-                                <span class="wo-timeline-stage-label">Current Stage</span>
-                                <span class="wo-timeline-stage-value">Scheduled: Feb 3 - 7</span>
-                            </div>
+                            <span class="wo-milestone-label">Created</span>
+                            <span class="wo-milestone-date">Jan 15</span>
                         </div>
 
-                        <!-- Progress Dots -->
-                        <div class="wo-timeline-progress">
-                            <div class="wo-timeline-dot is-complete" title="Created"></div>
-                            <div class="wo-timeline-dot is-complete" title="Accepted"></div>
-                            <div class="wo-timeline-dot is-current" title="Scheduled"></div>
-                            <div class="wo-timeline-dot is-pending" title="Started"></div>
-                            <div class="wo-timeline-dot is-pending" title="Completed"></div>
+                        <!-- Milestone: Accepted -->
+                        <div class="wo-milestone is-complete">
+                            <div class="wo-milestone-dot">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            <span class="wo-milestone-label">Accepted</span>
+                            <span class="wo-milestone-date">Jan 20</span>
                         </div>
+
+                        <!-- Milestone: Scheduled (Current) -->
+                        <div class="wo-milestone is-current">
+                            <div class="wo-milestone-dot"></div>
+                            <span class="wo-milestone-label">Scheduled</span>
+                            <span class="wo-milestone-date">Feb 3 - 7</span>
+                        </div>
+
+                        <!-- Milestone: Started -->
+                        <div class="wo-milestone is-pending">
+                            <div class="wo-milestone-dot"></div>
+                            <span class="wo-milestone-label">Started</span>
+                            <span class="wo-milestone-date">—</span>
+                        </div>
+
+                        <!-- Milestone: Completed -->
+                        <div class="wo-milestone is-pending">
+                            <div class="wo-milestone-dot"></div>
+                            <span class="wo-milestone-label">Completed</span>
+                            <span class="wo-milestone-date">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Stage Info + Toggle -->
+                <div class="wo-timeline-current-stage">
+                    <div class="wo-current-stage-info">
+                        <div class="wo-current-stage-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Scheduled
+                        </div>
+                        <span class="wo-current-stage-date">Feb 3 - 7, 2025</span>
                     </div>
 
                     <button type="button" class="wo-timeline-toggle" id="wo-timeline-toggle">
