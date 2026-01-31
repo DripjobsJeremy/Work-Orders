@@ -2422,8 +2422,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            cursor: pointer;
+            gap: 6px;
+            padding-top: 4px;
         }
 
         .wo-milestone-dot {
@@ -2480,6 +2480,7 @@
             text-align: center;
             white-space: nowrap;
             transition: color 0.2s ease;
+            margin-top: 4px;
         }
 
         .wo-milestone.is-complete .wo-milestone-label,
@@ -2491,7 +2492,6 @@
         .wo-milestone-date {
             font-size: 10px;
             color: var(--dj-gray-400);
-            margin-top: -4px;
         }
 
         .wo-milestone.is-current .wo-milestone-date {
@@ -2499,188 +2499,57 @@
             font-weight: 600;
         }
 
-        /* Current stage highlight below progress bar */
-        .wo-timeline-current-stage {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid var(--dj-gray-100);
+        /* Editable milestone dates */
+        .wo-milestone.is-editable {
+            cursor: pointer;
         }
 
-        .wo-current-stage-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .wo-milestone.is-editable:hover .wo-milestone-dot {
+            border-color: var(--dj-primary);
+            background-color: #F0F9FF;
         }
 
-        .wo-current-stage-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #F3E8FF, #EDE9FE);
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #7C3AED;
+        .wo-milestone.is-editable .wo-milestone-date {
+            color: var(--dj-primary);
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            cursor: pointer;
         }
 
-        .wo-current-stage-badge svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        .wo-current-stage-date {
-            font-size: 14px;
-            color: var(--dj-gray-600);
-        }
-
-        /* Expand Toggle Button */
-        .wo-timeline-toggle {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 10px;
-            background: none;
-            border: 1px solid var(--dj-gray-200);
+        .wo-milestone-date-input {
+            display: none;
+            width: 110px;
+            padding: 6px 8px;
+            border: 1px solid var(--dj-primary);
             border-radius: 6px;
             font-size: 12px;
-            color: var(--dj-gray-600);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .wo-timeline-toggle:hover {
-            background-color: var(--dj-gray-50);
-            border-color: var(--dj-gray-300);
-        }
-
-        .wo-timeline-toggle svg {
-            width: 14px;
-            height: 14px;
-            transition: transform 0.2s ease;
-        }
-
-        .wo-timeline-expanded .wo-timeline-toggle svg {
-            transform: rotate(180deg);
-        }
-
-        /* Expanded Timeline View */
-        .wo-timeline-full {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, margin-top 0.3s ease, padding-top 0.3s ease;
-        }
-
-        .wo-timeline-expanded .wo-timeline-full {
-            max-height: 400px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--dj-gray-100);
-        }
-
-        /* Horizontal Timeline Flow (in expanded view) */
-        .wo-dates-flow {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .wo-date-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        .wo-date-pill-label {
-            font-weight: 500;
-            opacity: 0.85;
-        }
-
-        .wo-date-pill-value {
-            font-weight: 600;
-        }
-
-        /* Stage Colors */
-        .wo-date-pill.stage-created {
-            background-color: #E5E7EB;
-            color: #374151;
-        }
-
-        .wo-date-pill.stage-accepted {
-            background-color: #DBEAFE;
-            color: #1E40AF;
-        }
-
-        .wo-date-pill.stage-scheduled {
-            background-color: #F3E8FF;
-            color: #7C3AED;
-        }
-
-        .wo-date-pill.stage-actual {
-            background-color: #D1FAE5;
-            color: #065F46;
-        }
-
-        .wo-date-pill.stage-pending {
-            background-color: #FEF3C7;
-            color: #92400E;
-            border: 1px dashed #F59E0B;
-        }
-
-        .wo-date-pill.stage-change-order {
-            background-color: #ECFDF5;
-            color: #047857;
-            border: 1px solid #10B981;
-        }
-
-        /* Arrow separator between stages */
-        .wo-date-arrow {
-            color: var(--dj-gray-400);
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        /* Edit mode for editable dates */
-        .wo-date-pill .wo-date-input {
-            display: none;
-            padding: 4px 8px;
-            border: 1px solid currentColor;
-            border-radius: 4px;
-            font-size: 13px;
+            text-align: center;
             background: white;
-            color: inherit;
-            width: 130px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            margin-top: 4px;
         }
 
-        .wo-date-pill .wo-date-input:focus {
+        .wo-milestone-date-input:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .wo-edit-mode .wo-date-pill.is-editable .wo-date-pill-value {
+        .wo-milestone.is-editing .wo-milestone-date {
             display: none;
         }
 
-        .wo-edit-mode .wo-date-pill.is-editable .wo-date-input {
+        .wo-milestone.is-editing .wo-milestone-date-input {
             display: block;
         }
 
-        /* Legacy grid styles (kept for compatibility) */
-        .wo-dates-grid {
-            display: none;
+        .wo-milestone.is-editing .wo-milestone-dot {
+            border-color: var(--dj-primary);
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
         }
 
+        /* Change Orders Section */
         .wo-change-orders {
-            margin-top: 12px;
+            margin-top: 16px;
             padding-top: 12px;
             border-top: 1px dashed var(--dj-gray-200);
             display: flex;
@@ -2695,6 +2564,27 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0;
+        }
+
+        .wo-change-order-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            white-space: nowrap;
+            background-color: #ECFDF5;
+            color: #047857;
+            border: 1px solid #10B981;
+        }
+
+        .wo-change-order-pill-number {
+            font-weight: 600;
+        }
+
+        .wo-change-order-pill-date {
+            opacity: 0.8;
         }
 
         /* ============================================================
@@ -3788,87 +3678,30 @@
                             <span class="wo-milestone-date">Feb 3 - 7</span>
                         </div>
 
-                        <!-- Milestone: Started -->
-                        <div class="wo-milestone is-pending">
+                        <!-- Milestone: Started (Editable) -->
+                        <div class="wo-milestone is-pending is-editable" data-milestone="started">
                             <div class="wo-milestone-dot"></div>
                             <span class="wo-milestone-label">Started</span>
-                            <span class="wo-milestone-date">—</span>
+                            <span class="wo-milestone-date">Set Date</span>
+                            <input type="date" class="wo-milestone-date-input" title="Start Date" aria-label="Start Date" />
                         </div>
 
-                        <!-- Milestone: Completed -->
-                        <div class="wo-milestone is-pending">
+                        <!-- Milestone: Completed (Editable) -->
+                        <div class="wo-milestone is-pending is-editable" data-milestone="completed">
                             <div class="wo-milestone-dot"></div>
                             <span class="wo-milestone-label">Completed</span>
-                            <span class="wo-milestone-date">—</span>
+                            <span class="wo-milestone-date">Set Date</span>
+                            <input type="date" class="wo-milestone-date-input" title="Completion Date" aria-label="Completion Date" />
                         </div>
                     </div>
                 </div>
 
-                <!-- Current Stage Info + Toggle -->
-                <div class="wo-timeline-current-stage">
-                    <div class="wo-current-stage-info">
-                        <div class="wo-current-stage-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            Scheduled
-                        </div>
-                        <span class="wo-current-stage-date">Feb 3 - 7, 2025</span>
-                    </div>
-
-                    <button type="button" class="wo-timeline-toggle" id="wo-timeline-toggle">
-                        <span>Details</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Expandable Full Timeline -->
-                <div class="wo-timeline-full">
-                    <div class="wo-dates-flow">
-                        <!-- Created -->
-                        <div class="wo-date-pill stage-created">
-                            <span class="wo-date-pill-label">Created:</span>
-                            <span class="wo-date-pill-value">Jan 15</span>
-                        </div>
-                        <span class="wo-date-arrow">→</span>
-                        <!-- Accepted -->
-                        <div class="wo-date-pill stage-accepted">
-                            <span class="wo-date-pill-label">Accepted:</span>
-                            <span class="wo-date-pill-value">Jan 20</span>
-                        </div>
-                        <span class="wo-date-arrow">→</span>
-                        <!-- Scheduled -->
-                        <div class="wo-date-pill stage-scheduled">
-                            <span class="wo-date-pill-label">Scheduled:</span>
-                            <span class="wo-date-pill-value">Feb 3 - 7</span>
-                        </div>
-                        <span class="wo-date-arrow">→</span>
-                        <!-- Actual Start (editable) -->
-                        <div class="wo-date-pill stage-pending is-editable">
-                            <span class="wo-date-pill-label">Started:</span>
-                            <span class="wo-date-pill-value">Not Set</span>
-                            <input type="date" class="wo-date-input" value="" />
-                        </div>
-                        <span class="wo-date-arrow">→</span>
-                        <!-- Actual Completion (editable) -->
-                        <div class="wo-date-pill stage-pending is-editable">
-                            <span class="wo-date-pill-label">Completed:</span>
-                            <span class="wo-date-pill-value">Not Set</span>
-                            <input type="date" class="wo-date-input" value="" />
-                        </div>
-                    </div>
-                    <!-- Change Orders (if any) -->
-                    <div class="wo-change-orders">
-                        <span class="wo-date-label">Change Orders:</span>
-                        <div class="wo-date-pill stage-change-order">
-                            <span class="wo-date-pill-label">#83670</span>
-                            <span class="wo-date-pill-value">Jan 22</span>
-                        </div>
+                <!-- Change Orders (always visible) -->
+                <div class="wo-change-orders">
+                    <span class="wo-date-label">Change Orders:</span>
+                    <div class="wo-change-order-pill">
+                        <span class="wo-change-order-pill-number">#83670</span>
+                        <span class="wo-change-order-pill-date">Jan 22</span>
                     </div>
                 </div>
             </div>
@@ -5235,9 +5068,25 @@
                     self.toggleAreaCollapse($(this));
                 });
 
-                // Timeline expand/collapse toggle
-                $('#wo-timeline-toggle').on('click', function() {
-                    self.toggleTimeline();
+                // Milestone date editing - click to open date picker
+                $(document).on('click', '.wo-milestone.is-editable', function(e) {
+                    if (!$(e.target).is('input')) {
+                        self.openMilestoneDatePicker($(this));
+                    }
+                });
+
+                // Milestone date input change
+                $(document).on('change', '.wo-milestone-date-input', function() {
+                    self.handleMilestoneDateChange($(this));
+                });
+
+                // Close milestone date picker on blur
+                $(document).on('blur', '.wo-milestone-date-input', function() {
+                    var $milestone = $(this).closest('.wo-milestone');
+                    // Small delay to allow click events to complete
+                    setTimeout(function() {
+                        $milestone.removeClass('is-editing');
+                    }, 150);
                 });
 
                 // Rule 3: Settings toggles (show/hide hours)
@@ -5653,13 +5502,67 @@
                 $icon.css('transform', $body.hasClass('collapsed') ? 'rotate(-90deg)' : 'rotate(0)');
             },
 
-            toggleTimeline: function() {
-                var $card = $('.wo-dates-card');
-                $card.toggleClass('wo-timeline-expanded');
+            openMilestoneDatePicker: function($milestone) {
+                // Close any other open date pickers
+                $('.wo-milestone.is-editing').not($milestone).removeClass('is-editing');
 
-                var $btn = $('#wo-timeline-toggle');
-                var isExpanded = $card.hasClass('wo-timeline-expanded');
-                $btn.find('span').text(isExpanded ? 'Hide' : 'Details');
+                // Open this one
+                $milestone.addClass('is-editing');
+                $milestone.find('.wo-milestone-date-input').focus();
+            },
+
+            handleMilestoneDateChange: function($input) {
+                var $milestone = $input.closest('.wo-milestone');
+                var dateValue = $input.val();
+                var milestoneType = $milestone.data('milestone');
+
+                if (dateValue) {
+                    // Format date for display
+                    var date = new Date(dateValue + 'T00:00:00');
+                    var options = { month: 'short', day: 'numeric' };
+                    var formattedDate = date.toLocaleDateString('en-US', options);
+
+                    // Update the display
+                    $milestone.find('.wo-milestone-date').text(formattedDate);
+
+                    // Update milestone state
+                    $milestone.removeClass('is-pending').addClass('is-complete');
+
+                    // Add checkmark to dot if not already there
+                    if ($milestone.find('.wo-milestone-dot svg').length === 0) {
+                        $milestone.find('.wo-milestone-dot').html(
+                            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<polyline points="20 6 9 17 4 12"></polyline>' +
+                            '</svg>'
+                        );
+                    }
+
+                    // Update progress bar fill based on completed milestones
+                    this.updateTimelineProgress();
+
+                    this.showToast(milestoneType.charAt(0).toUpperCase() + milestoneType.slice(1) + ' date saved', 'success');
+                    this.markAsChanged();
+                } else {
+                    // Clear the date - revert to pending
+                    $milestone.find('.wo-milestone-date').text('Set Date');
+                    $milestone.removeClass('is-complete').addClass('is-pending');
+                    $milestone.find('.wo-milestone-dot').html('');
+                    this.updateTimelineProgress();
+                }
+
+                $milestone.removeClass('is-editing');
+            },
+
+            updateTimelineProgress: function() {
+                var completedCount = $('.wo-milestone.is-complete').length;
+                var currentCount = $('.wo-milestone.is-current').length;
+                var totalMilestones = 5;
+
+                // Calculate progress percentage (each milestone = 25%)
+                var progress = Math.round(((completedCount + (currentCount * 0.5)) / (totalMilestones - 1)) * 100);
+                progress = Math.min(progress, 100);
+
+                $('.wo-timeline-fill').attr('data-progress', progress);
             },
 
             // Rule 3: Handle settings toggle (show/hide hours)
