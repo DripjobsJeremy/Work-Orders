@@ -2051,26 +2051,6 @@
                 max-width: 20%;
             }
 
-            /* Add Stage button starts new row, aligned left */
-            .wo-timeline-track > .wo-add-stage-btn {
-                flex: 0 0 20%;
-                max-width: 20%;
-                margin-right: auto;
-                margin-top: 20px;
-            }
-
-            /* Force line break before Add Stage using full-width pseudo row */
-            .wo-timeline-track::after {
-                content: '';
-                flex: 0 0 100%;
-                height: 0;
-                order: 998;
-            }
-
-            .wo-timeline-track > .wo-add-stage-btn {
-                order: 999;
-            }
-
             /* Smaller labels on mobile */
             .wo-milestone-label {
                 font-size: 9px;
@@ -2078,10 +2058,6 @@
 
             .wo-milestone-date {
                 font-size: 8px;
-            }
-
-            .wo-add-stage-label {
-                font-size: 9px;
             }
 
             /* Mobile: milestones after the 5th get separator */
@@ -2429,8 +2405,7 @@
         }
 
         /* Desktop: max 6 per row */
-        .wo-timeline-track > .wo-milestone,
-        .wo-timeline-track > .wo-add-stage-btn {
+        .wo-timeline-track > .wo-milestone {
             flex: 0 0 calc(100% / 6);
             max-width: calc(100% / 6);
         }
@@ -2474,8 +2449,7 @@
         }
 
         /* Desktop: items after the 6th get top padding for visual separation */
-        .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+7),
-        .wo-timeline-track.has-multiple-rows > .wo-add-stage-btn:nth-child(n+7) {
+        .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+7) {
             padding-top: 12px;
             border-top: 1px dashed var(--dj-gray-200);
             margin-top: -12px;
@@ -2631,173 +2605,6 @@
         .wo-milestone.is-editing .wo-milestone-dot {
             border-color: var(--dj-primary);
             box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
-        }
-
-        /* Custom milestone - editable name */
-        .wo-milestone.is-custom .wo-milestone-label {
-            cursor: text;
-        }
-
-        .wo-milestone.is-custom:hover .wo-milestone-label {
-            text-decoration: underline;
-            text-decoration-style: dashed;
-        }
-
-        .wo-milestone-name-input {
-            display: none;
-            width: 80px;
-            padding: 4px 6px;
-            border: 1px solid var(--dj-primary);
-            border-radius: 4px;
-            font-size: 11px;
-            text-align: center;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .wo-milestone-name-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .wo-milestone.is-editing-name .wo-milestone-label {
-            display: none;
-        }
-
-        .wo-milestone.is-editing-name .wo-milestone-name-input {
-            display: block;
-        }
-
-        /* Delete button for custom milestones */
-        .wo-milestone-delete {
-            display: none;
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            width: 16px;
-            height: 16px;
-            background-color: #EF4444;
-            border: 2px solid white;
-            border-radius: 50%;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .wo-milestone-delete svg {
-            width: 8px;
-            height: 8px;
-            color: white;
-        }
-
-        .wo-milestone.is-custom:hover .wo-milestone-delete {
-            display: flex;
-        }
-
-        /* Draggable custom milestones */
-        .wo-milestone.is-custom {
-            cursor: grab;
-        }
-
-        .wo-milestone.is-custom:active {
-            cursor: grabbing;
-        }
-
-        .wo-milestone.is-custom.ui-sortable-helper {
-            cursor: grabbing;
-            opacity: 0.9;
-            transform: scale(1.05);
-            z-index: 100;
-        }
-
-        .wo-milestone.is-custom.ui-sortable-helper .wo-milestone-dot {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-        }
-
-        .wo-timeline-track.ui-sortable .wo-milestone.is-custom.ui-sortable-placeholder {
-            visibility: visible !important;
-            background: transparent;
-        }
-
-        .wo-timeline-track.ui-sortable .wo-milestone.is-custom.ui-sortable-placeholder .wo-milestone-dot {
-            border: 2px dashed var(--dj-primary);
-            background: rgba(0, 123, 255, 0.1);
-        }
-
-        .wo-timeline-track.ui-sortable .wo-milestone.is-custom.ui-sortable-placeholder .wo-milestone-label,
-        .wo-timeline-track.ui-sortable .wo-milestone.is-custom.ui-sortable-placeholder .wo-milestone-date,
-        .wo-timeline-track.ui-sortable .wo-milestone.is-custom.ui-sortable-placeholder .wo-milestone-delete {
-            visibility: hidden;
-        }
-
-        /* Add Stage Button */
-        .wo-add-stage-btn {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            padding-top: 4px;
-            cursor: pointer;
-        }
-
-        .wo-add-stage-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: white;
-            border: 2px dashed var(--dj-gray-300);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .wo-add-stage-dot svg {
-            width: 10px;
-            height: 10px;
-            color: var(--dj-gray-400);
-            transition: color 0.2s ease;
-        }
-
-        .wo-add-stage-btn:hover .wo-add-stage-dot {
-            border-color: var(--dj-primary);
-            background-color: #F0F9FF;
-        }
-
-        .wo-add-stage-btn:hover .wo-add-stage-dot svg {
-            color: var(--dj-primary);
-        }
-
-        .wo-add-stage-label {
-            font-size: 10px;
-            color: var(--dj-gray-400);
-            text-align: center;
-            white-space: nowrap;
-            margin-top: 8px;
-            transition: color 0.2s ease;
-        }
-
-        .wo-add-stage-btn:hover .wo-add-stage-label {
-            color: var(--dj-primary);
-        }
-
-        /* Custom milestone colors (orange/amber theme) */
-        .wo-milestone.is-custom.is-complete .wo-milestone-dot {
-            background-color: #F59E0B;
-            border-color: #F59E0B;
-        }
-
-        .wo-milestone.is-custom.is-complete .wo-milestone-label {
-            color: #B45309;
-            font-weight: 500;
-        }
-
-        .wo-milestone.is-custom.is-complete .wo-milestone-date {
-            color: #F59E0B;
-            font-weight: 600;
         }
 
         /* Change Orders Section */
@@ -3947,16 +3754,6 @@
                             <input type="date" class="wo-milestone-date-input" title="Completion Date" aria-label="Completion Date" />
                         </div>
 
-                        <!-- Add Custom Stage Button -->
-                        <div class="wo-add-stage-btn" id="wo-add-stage-btn" title="Add custom stage">
-                            <div class="wo-add-stage-dot">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                            </div>
-                            <span class="wo-add-stage-label">Add Stage</span>
-                        </div>
                     </div>
                 </div>
 
@@ -5363,36 +5160,6 @@
                     }, 150);
                 });
 
-                // Add custom stage button
-                $('#wo-add-stage-btn').on('click', function() {
-                    self.addCustomStage();
-                });
-
-                // Edit custom milestone name - click on label
-                $(document).on('click', '.wo-milestone.is-custom .wo-milestone-label', function(e) {
-                    e.stopPropagation();
-                    self.openMilestoneNameEditor($(this).closest('.wo-milestone'));
-                });
-
-                // Save custom milestone name on blur
-                $(document).on('blur', '.wo-milestone-name-input', function() {
-                    self.saveMilestoneName($(this));
-                });
-
-                // Save custom milestone name on Enter
-                $(document).on('keydown', '.wo-milestone-name-input', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        $(this).blur();
-                    }
-                });
-
-                // Delete custom milestone
-                $(document).on('click', '.wo-milestone-delete', function(e) {
-                    e.stopPropagation();
-                    self.deleteCustomMilestone($(this).closest('.wo-milestone'));
-                });
-
                 // Rule 3: Settings toggles (show/hide hours)
                 $(document).on('click', '.wo-toggle', function() {
                     self.handleSettingToggle($(this));
@@ -5632,32 +5399,6 @@
                 });
 
                 console.log('Sortable initialized for areas and line items');
-
-                // Sortable for custom timeline stages (always enabled)
-                this.initTimelineSortable();
-            },
-
-            initTimelineSortable: function() {
-                var self = this;
-
-                $('.wo-timeline-track').sortable({
-                    items: '.wo-milestone.is-custom',
-                    placeholder: 'wo-milestone is-custom ui-sortable-placeholder',
-                    tolerance: 'pointer',
-                    cursor: 'grabbing',
-                    opacity: 0.9,
-                    revert: 150,
-                    axis: 'x',
-
-                    start: function(event, ui) {
-                        ui.placeholder.width(ui.item.outerWidth());
-                    },
-
-                    stop: function(event, ui) {
-                        self.showToast('Stage reordered', 'success');
-                        self.markAsChanged();
-                    }
-                });
             },
 
             enableSortable: function() {
@@ -5875,11 +5616,6 @@
                     // Update progress bar fill based on completed milestones
                     this.updateTimelineProgress();
 
-                    // Sort custom stages chronologically if this is a custom stage
-                    if ($milestone.hasClass('is-custom')) {
-                        this.sortTimelineChronologically();
-                    }
-
                     // Get display name for toast
                     var displayName = $milestone.find('.wo-milestone-label').text();
                     this.showToast(displayName + ' date saved', 'success');
@@ -5921,159 +5657,6 @@
                 } else {
                     $track.removeClass('has-multiple-rows');
                 }
-            },
-
-            sortTimelineChronologically: function() {
-                var self = this;
-                var $track = $('.wo-timeline-track');
-                var $addBtn = $('#wo-add-stage-btn');
-
-                // Get all milestones with their dates
-                var milestones = [];
-                $track.find('.wo-milestone').each(function() {
-                    var $m = $(this);
-                    var dateInput = $m.find('.wo-milestone-date-input').val();
-                    var dateText = $m.find('.wo-milestone-date').text();
-
-                    // Parse the date
-                    var dateValue = null;
-                    if (dateInput) {
-                        dateValue = new Date(dateInput + 'T00:00:00');
-                    } else if (dateText && dateText !== 'Set Date' && dateText !== '—') {
-                        // Try to parse display date (e.g., "Jan 15" or "Feb 3 - 7")
-                        var cleanDate = dateText.split(' - ')[0]; // Take first date if range
-                        var year = new Date().getFullYear();
-                        dateValue = new Date(cleanDate + ', ' + year);
-                    }
-
-                    milestones.push({
-                        $el: $m,
-                        date: dateValue,
-                        isCustom: $m.hasClass('is-custom'),
-                        isFixed: !$m.hasClass('is-custom') // Fixed milestones (Created, Accepted, etc.)
-                    });
-                });
-
-                // Separate fixed and custom milestones
-                var fixedMilestones = milestones.filter(function(m) { return m.isFixed; });
-                var customMilestones = milestones.filter(function(m) { return m.isCustom; });
-
-                // Sort custom milestones by date (nulls/undated go to end)
-                customMilestones.sort(function(a, b) {
-                    if (!a.date && !b.date) return 0;
-                    if (!a.date) return 1;
-                    if (!b.date) return -1;
-                    return a.date - b.date;
-                });
-
-                // Find where to insert each custom milestone among fixed ones
-                var allSorted = [];
-                var customIndex = 0;
-
-                fixedMilestones.forEach(function(fixed, i) {
-                    // Insert any custom milestones that come before this fixed one
-                    while (customIndex < customMilestones.length) {
-                        var custom = customMilestones[customIndex];
-                        if (custom.date && fixed.date && custom.date < fixed.date) {
-                            allSorted.push(custom);
-                            customIndex++;
-                        } else {
-                            break;
-                        }
-                    }
-                    allSorted.push(fixed);
-                });
-
-                // Add remaining custom milestones at the end
-                while (customIndex < customMilestones.length) {
-                    allSorted.push(customMilestones[customIndex]);
-                    customIndex++;
-                }
-
-                // Reorder DOM elements with animation
-                allSorted.forEach(function(m, index) {
-                    m.$el.css('order', index);
-                });
-
-                // After a brief delay, actually reorder DOM and remove order styles
-                setTimeout(function() {
-                    allSorted.forEach(function(m) {
-                        m.$el.detach().insertBefore($addBtn);
-                        m.$el.css('order', '');
-                    });
-
-                    // Refresh sortable
-                    $track.sortable('refresh');
-                }, 300);
-            },
-
-            addCustomStage: function() {
-                var stageId = 'custom-' + Date.now();
-                var $addBtn = $('#wo-add-stage-btn');
-
-                var customMilestoneHtml =
-                    '<div class="wo-milestone is-pending is-editable is-custom" data-milestone="' + stageId + '">' +
-                        '<button type="button" class="wo-milestone-delete" title="Remove stage">' +
-                            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                                '<line x1="18" y1="6" x2="6" y2="18"></line>' +
-                                '<line x1="6" y1="6" x2="18" y2="18"></line>' +
-                            '</svg>' +
-                        '</button>' +
-                        '<div class="wo-milestone-dot"></div>' +
-                        '<span class="wo-milestone-label">New Stage</span>' +
-                        '<input type="text" class="wo-milestone-name-input" value="New Stage" maxlength="15" />' +
-                        '<span class="wo-milestone-date">Set Date</span>' +
-                        '<input type="date" class="wo-milestone-date-input" title="Stage Date" aria-label="Stage Date" />' +
-                    '</div>';
-
-                // Insert before the Add Stage button
-                $addBtn.before(customMilestoneHtml);
-
-                // Refresh sortable to include new element
-                $('.wo-timeline-track').sortable('refresh');
-
-                // Check if we need multiple rows
-                this.checkTimelineRows();
-
-                // Open name editor for new stage
-                var $newMilestone = $addBtn.prev('.wo-milestone');
-                this.openMilestoneNameEditor($newMilestone);
-
-                this.showToast('Custom stage added', 'success');
-                this.markAsChanged();
-            },
-
-            openMilestoneNameEditor: function($milestone) {
-                // Close any other open editors
-                $('.wo-milestone.is-editing-name').removeClass('is-editing-name');
-
-                $milestone.addClass('is-editing-name');
-                var $input = $milestone.find('.wo-milestone-name-input');
-                $input.focus().select();
-            },
-
-            saveMilestoneName: function($input) {
-                var $milestone = $input.closest('.wo-milestone');
-                var newName = $input.val().trim();
-
-                if (newName) {
-                    $milestone.find('.wo-milestone-label').text(newName);
-                } else {
-                    // Revert to original if empty
-                    $input.val($milestone.find('.wo-milestone-label').text());
-                }
-
-                $milestone.removeClass('is-editing-name');
-            },
-
-            deleteCustomMilestone: function($milestone) {
-                var self = this;
-                $milestone.fadeOut(200, function() {
-                    $(this).remove();
-                    self.updateTimelineProgress();
-                    self.showToast('Stage removed', 'success');
-                    self.markAsChanged();
-                });
             },
 
             // Rule 3: Handle settings toggle (show/hide hours)
