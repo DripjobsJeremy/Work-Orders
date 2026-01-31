@@ -1863,63 +1863,194 @@
            Responsive
            ============================================================ */
         @media (max-width: 767px) {
+            /* Work Order Options - Mobile */
+            .wo-options-panel {
+                padding: 16px;
+            }
+
+            .wo-options-actions {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .wo-options-actions .wo-btn {
+                flex: 1 1 auto;
+                min-width: 120px;
+                justify-content: center;
+            }
+
+            .wo-options-spacer {
+                display: none;
+            }
+
+            .wo-options-actions #wo-send-wo-btn {
+                flex: 1 1 100%;
+                order: 10;
+            }
+
+            /* Crew Info - Mobile */
+            .wo-crew-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .wo-crew-tabs {
+                flex-wrap: wrap;
+            }
+
+            .wo-crew-tab {
+                flex: 1 1 auto;
+                min-width: 100px;
+                text-align: center;
+                justify-content: center;
+            }
+
+            /* Line Items Table - Mobile Card Layout */
+            .wo-line-items-table {
+                display: block;
+            }
+
             .wo-line-items-table thead {
                 display: none;
             }
 
+            .wo-line-items-table tbody {
+                display: block;
+            }
+
             .wo-line-item-row {
-                display: flex;
-                flex-wrap: wrap;
-                padding: 12px;
-                gap: 8px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas:
+                    "item item"
+                    "prep working"
+                    "total unit"
+                    "coats coats";
+                gap: 12px;
+                padding: 16px;
+                border-bottom: 1px solid var(--dj-gray-200);
             }
 
             .wo-line-item-row td {
-                padding: 4px;
+                padding: 0;
                 border: none;
+                display: block;
             }
 
             .wo-line-item-row td.wo-col-drag {
-                width: 30px;
-                order: 1;
+                display: none;
             }
 
             .wo-line-item-row td.wo-col-item {
-                flex: 1;
-                order: 2;
-                min-width: calc(100% - 80px);
+                grid-area: item;
+            }
+
+            .wo-line-item-row td.wo-col-prep {
+                grid-area: prep;
+            }
+
+            .wo-line-item-row td.wo-col-working {
+                grid-area: working;
+            }
+
+            .wo-line-item-row td.wo-col-total {
+                grid-area: total;
+            }
+
+            .wo-line-item-row td.wo-col-unit {
+                grid-area: unit;
+            }
+
+            .wo-line-item-row td.wo-col-coats {
+                grid-area: coats;
             }
 
             .wo-line-item-row td.wo-col-actions {
-                width: 40px;
-                order: 3;
+                display: none;
             }
 
-            .wo-line-item-row td.wo-col-prep,
-            .wo-line-item-row td.wo-col-working,
-            .wo-line-item-row td.wo-col-total,
-            .wo-line-item-row td.wo-col-unit,
-            .wo-line-item-row td.wo-col-coats {
-                width: calc(50% - 4px);
-                order: 4;
-            }
-
-            .wo-field-input,
-            .wo-field-value {
-                text-align: left;
-            }
-
-            .wo-editable-field::before {
+            /* Mobile field labels */
+            .wo-line-item-row td.wo-col-prep::before,
+            .wo-line-item-row td.wo-col-working::before,
+            .wo-line-item-row td.wo-col-total::before,
+            .wo-line-item-row td.wo-col-unit::before,
+            .wo-line-item-row td.wo-col-coats::before {
                 content: attr(data-label);
                 display: block;
-                font-size: 11px;
+                font-size: 10px;
+                font-weight: 600;
                 color: var(--dj-gray-500);
                 text-transform: uppercase;
+                letter-spacing: 0.5px;
                 margin-bottom: 4px;
             }
 
+            .wo-field-value {
+                justify-content: flex-start;
+                text-align: left;
+                padding: 0;
+                min-height: 0;
+            }
+
+            /* Section Totals Footer - Mobile */
+            .wo-area-totals-footer {
+                display: block;
+            }
+
+            .wo-area-totals-footer tr {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .wo-area-totals-footer td {
+                padding: 0;
+            }
+
+            .wo-area-totals-footer td.wo-col-drag,
+            .wo-area-totals-footer td.wo-col-item,
+            .wo-area-totals-footer td.wo-col-unit,
+            .wo-area-totals-footer td.wo-col-coats,
+            .wo-area-totals-footer td.wo-col-actions {
+                display: none;
+            }
+
+            .wo-area-totals-footer td.wo-col-prep,
+            .wo-area-totals-footer td.wo-col-working,
+            .wo-area-totals-footer td.wo-col-total {
+                display: block;
+                text-align: center;
+                padding: 0;
+            }
+
+            .wo-area-totals-footer .wo-footer-label {
+                text-align: center;
+                font-size: 10px;
+            }
+
+            .wo-area-totals-footer .wo-footer-value {
+                text-align: center;
+            }
+
+            /* Grand Totals - Mobile */
             .wo-grand-totals-grid {
                 grid-template-columns: 1fr;
+            }
+
+            /* Project Timeline - Mobile */
+            .wo-dates-flow {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .wo-date-arrow {
+                display: none;
+            }
+
+            .wo-date-pill {
+                flex: 1 1 45%;
             }
         }
 
