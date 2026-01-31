@@ -2057,6 +2057,14 @@
                 display: none;
             }
 
+            /* Mobile: items after the 5th get top padding for visual separation */
+            .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+6),
+            .wo-timeline-track.has-multiple-rows > .wo-add-stage-btn:nth-child(n+6) {
+                padding-top: 12px;
+                border-top: 1px dashed var(--dj-gray-200);
+                margin-top: -12px;
+            }
+
             .wo-dates-flow {
                 flex-wrap: wrap;
                 gap: 8px;
@@ -2390,7 +2398,8 @@
             flex-wrap: wrap;
             align-items: flex-start;
             justify-content: flex-start;
-            gap: 8px 0;
+            row-gap: 20px;
+            column-gap: 0;
             padding: 0 8px;
         }
 
@@ -2437,6 +2446,20 @@
         .wo-timeline-track.has-multiple-rows::before,
         .wo-timeline-track.has-multiple-rows .wo-timeline-fill {
             display: none;
+        }
+
+        /* Add subtle separator line between rows when wrapping */
+        .wo-timeline-track.has-multiple-rows {
+            row-gap: 24px;
+            padding-bottom: 8px;
+        }
+
+        /* Desktop: items after the 6th get top padding for visual separation */
+        .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+7),
+        .wo-timeline-track.has-multiple-rows > .wo-add-stage-btn:nth-child(n+7) {
+            padding-top: 12px;
+            border-top: 1px dashed var(--dj-gray-200);
+            margin-top: -12px;
         }
 
         /* Milestone points */
