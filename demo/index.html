@@ -2045,12 +2045,6 @@
                 grid-template-columns: 1fr;
             }
 
-            /* Project Timeline - Mobile: max 5 milestones per row */
-            .wo-timeline-track > .wo-milestone {
-                flex: 0 0 20%;
-                max-width: 20%;
-            }
-
             /* Smaller labels on mobile */
             .wo-milestone-label {
                 font-size: 9px;
@@ -2058,12 +2052,6 @@
 
             .wo-milestone-date {
                 font-size: 8px;
-            }
-
-            /* Mobile: milestones after the 5th get separator */
-            .wo-timeline-track > .wo-milestone:nth-child(n+6) {
-                padding-top: 16px;
-                margin-top: 4px;
             }
 
             .wo-dates-flow {
@@ -2441,19 +2429,6 @@
         .wo-timeline-fill[data-progress="50"] { width: calc(50% - 12px); }
         .wo-timeline-fill[data-progress="75"] { width: calc(75% - 12px); }
         .wo-timeline-fill[data-progress="100"] { width: calc(100% - 48px); }
-
-        /* Add subtle separator line between rows when wrapping */
-        .wo-timeline-track.has-multiple-rows {
-            row-gap: 24px;
-            padding-bottom: 8px;
-        }
-
-        /* Desktop: items after the 6th get top padding for visual separation */
-        .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+7) {
-            padding-top: 12px;
-            border-top: 1px dashed var(--dj-gray-200);
-            margin-top: -12px;
-        }
 
         /* Milestone points */
         .wo-milestone {
@@ -5050,14 +5025,6 @@
                 this.bindEvents();
                 this.initSortable();
 
-                // Initial check for timeline row wrapping
-                this.checkTimelineRows();
-
-                // Recheck on window resize
-                $(window).on('resize', function() {
-                    self.checkTimelineRows();
-                });
-
                 console.log('WorkOrderEditor Demo initialized');
             },
 
@@ -5641,22 +5608,6 @@
                 progress = Math.min(progress, 100);
 
                 $('.wo-timeline-fill').attr('data-progress', progress);
-
-                // Check if we have multiple rows (hide progress line if so)
-                this.checkTimelineRows();
-            },
-
-            checkTimelineRows: function() {
-                var $track = $('.wo-timeline-track');
-                var totalItems = $track.find('.wo-milestone').length; // Don't count Add button (it's always on new line on mobile)
-                var isMobile = window.innerWidth < 768;
-                var maxPerRow = isMobile ? 5 : 6;
-
-                if (totalItems > maxPerRow) {
-                    $track.addClass('has-multiple-rows');
-                } else {
-                    $track.removeClass('has-multiple-rows');
-                }
             },
 
             // Rule 3: Handle settings toggle (show/hide hours)
