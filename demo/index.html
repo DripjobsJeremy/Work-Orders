@@ -2045,7 +2045,18 @@
                 grid-template-columns: 1fr;
             }
 
-            /* Project Timeline - Mobile */
+            /* Project Timeline - Mobile: max 5 per row */
+            .wo-timeline-track > .wo-milestone,
+            .wo-timeline-track > .wo-add-stage-btn {
+                flex: 0 0 calc(100% / 5);
+                max-width: calc(100% / 5);
+            }
+
+            .wo-timeline-track::before,
+            .wo-timeline-fill {
+                display: none;
+            }
+
             .wo-dates-flow {
                 flex-wrap: wrap;
                 gap: 8px;
@@ -2376,34 +2387,41 @@
         .wo-timeline-track {
             position: relative;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 8px 0;
             padding: 0 8px;
         }
 
-        /* The background track line */
+        /* Desktop: max 6 per row */
+        .wo-timeline-track > .wo-milestone,
+        .wo-timeline-track > .wo-add-stage-btn {
+            flex: 0 0 calc(100% / 6);
+            max-width: calc(100% / 6);
+        }
+
+        /* The background track line - only shows on first row */
         .wo-timeline-track::before {
             content: '';
             position: absolute;
-            top: 50%;
+            top: 14px;
             left: 24px;
             right: 24px;
             height: 4px;
             background-color: var(--dj-gray-200);
             border-radius: 2px;
-            transform: translateY(-50%);
             z-index: 0;
         }
 
         /* The filled progress line */
         .wo-timeline-fill {
             position: absolute;
-            top: 50%;
+            top: 14px;
             left: 24px;
             height: 4px;
             background: linear-gradient(90deg, var(--dj-primary), #4F46E5);
             border-radius: 2px;
-            transform: translateY(-50%);
             z-index: 1;
             transition: width 0.4s ease;
         }
@@ -2414,6 +2432,12 @@
         .wo-timeline-fill[data-progress="50"] { width: calc(50% - 12px); }
         .wo-timeline-fill[data-progress="75"] { width: calc(75% - 12px); }
         .wo-timeline-fill[data-progress="100"] { width: calc(100% - 48px); }
+
+        /* Hide progress line when more than 6 stages (wrapping occurs) */
+        .wo-timeline-track.has-multiple-rows::before,
+        .wo-timeline-track.has-multiple-rows .wo-timeline-fill {
+            display: none;
+        }
 
         /* Milestone points */
         .wo-milestone {
@@ -5182,9 +5206,19 @@
             elements: {},
 
             init: function() {
+                var self = this;
                 this.cacheElements();
                 this.bindEvents();
                 this.initSortable();
+
+                // Initial check for timeline row wrapping
+                this.checkTimelineRows();
+
+                // Recheck on window resize
+                $(window).on('resize', function() {
+                    self.checkTimelineRows();
+                });
+
                 console.log('WorkOrderEditor Demo initialized');
             },
 
@@ -5829,6 +5863,22 @@
                 progress = Math.min(progress, 100);
 
                 $('.wo-timeline-fill').attr('data-progress', progress);
+
+                // Check if we have multiple rows (hide progress line if so)
+                this.checkTimelineRows();
+            },
+
+            checkTimelineRows: function() {
+                var $track = $('.wo-timeline-track');
+                var totalItems = $track.find('.wo-milestone').length + 1; // +1 for Add button
+                var isMobile = window.innerWidth < 768;
+                var maxPerRow = isMobile ? 5 : 6;
+
+                if (totalItems > maxPerRow) {
+                    $track.addClass('has-multiple-rows');
+                } else {
+                    $track.removeClass('has-multiple-rows');
+                }
             },
 
             sortTimelineChronologically: function() {
@@ -5939,6 +5989,9 @@
 
                 // Refresh sortable to include new element
                 $('.wo-timeline-track').sortable('refresh');
+
+                // Check if we need multiple rows
+                this.checkTimelineRows();
 
                 // Open name editor for new stage
                 var $newMilestone = $addBtn.prev('.wo-milestone');
