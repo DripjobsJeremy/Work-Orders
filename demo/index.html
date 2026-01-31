@@ -2045,16 +2045,29 @@
                 grid-template-columns: 1fr;
             }
 
-            /* Project Timeline - Mobile: max 5 per row */
+            /* Project Timeline - Mobile: max 4 per row */
             .wo-timeline-track > .wo-milestone,
             .wo-timeline-track > .wo-add-stage-btn {
-                flex: 0 0 calc(100% / 5);
-                max-width: calc(100% / 5);
+                flex: 0 0 25%;
+                max-width: 25%;
             }
 
-            /* Mobile: items after the 5th get top padding for visual separation */
-            .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+6),
-            .wo-timeline-track.has-multiple-rows > .wo-add-stage-btn:nth-child(n+6) {
+            /* Smaller labels on mobile */
+            .wo-milestone-label {
+                font-size: 9px;
+            }
+
+            .wo-milestone-date {
+                font-size: 8px;
+            }
+
+            .wo-add-stage-label {
+                font-size: 8px;
+            }
+
+            /* Mobile: items after the 4th get top padding for visual separation */
+            .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+5),
+            .wo-timeline-track.has-multiple-rows > .wo-add-stage-btn:nth-child(n+5) {
                 padding-top: 12px;
                 border-top: 1px dashed var(--dj-gray-200);
                 margin-top: -12px;
@@ -5884,7 +5897,7 @@
                 var $track = $('.wo-timeline-track');
                 var totalItems = $track.find('.wo-milestone').length + 1; // +1 for Add button
                 var isMobile = window.innerWidth < 768;
-                var maxPerRow = isMobile ? 5 : 6;
+                var maxPerRow = isMobile ? 4 : 6;
 
                 if (totalItems > maxPerRow) {
                     $track.addClass('has-multiple-rows');
