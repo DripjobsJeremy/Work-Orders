@@ -509,19 +509,22 @@
         .wo-line-items-table th.wo-col-total {
             width: 100px;
             min-width: 100px;
-            text-align: center;
+            text-align: right;
+            padding-right: 12px;
         }
 
         .wo-line-items-table th.wo-col-unit {
             width: 90px;
             min-width: 90px;
-            text-align: center;
+            text-align: right;
+            padding-right: 12px;
         }
 
         .wo-line-items-table th.wo-col-coats {
             width: 70px;
             min-width: 70px;
-            text-align: center;
+            text-align: right;
+            padding-right: 12px;
         }
 
         .wo-line-items-table th.wo-col-actions {
@@ -579,15 +582,18 @@
         .wo-line-item-row td.wo-col-prep,
         .wo-line-item-row td.wo-col-working,
         .wo-line-item-row td.wo-col-total {
-            text-align: center;
+            text-align: right;
+            padding-right: 12px;
         }
 
         .wo-line-item-row td.wo-col-unit {
-            text-align: center;
+            text-align: right;
+            padding-right: 12px;
         }
 
         .wo-line-item-row td.wo-col-coats {
-            text-align: center;
+            text-align: right;
+            padding-right: 12px;
         }
 
         .wo-line-item-row td.wo-col-actions {
@@ -1401,38 +1407,42 @@
         }
 
         /* ============================================================
-           Area Totals
+           Area Totals Footer (inside table)
            ============================================================ */
-        .wo-area-totals {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 24px;
-            padding: 12px 16px;
+        .wo-area-totals-footer {
             background-color: var(--dj-gray-50);
-            border-top: 1px solid var(--dj-gray-200);
         }
 
-        .wo-area-total-item {
+        .wo-area-totals-footer tr {
+            border-top: 2px solid var(--dj-gray-200);
+        }
+
+        .wo-area-totals-footer td {
+            padding: 12px 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--dj-gray-700);
+        }
+
+        .wo-area-totals-footer td.wo-col-prep,
+        .wo-area-totals-footer td.wo-col-working,
+        .wo-area-totals-footer td.wo-col-total {
             text-align: right;
+            padding-right: 12px;
         }
 
-        .wo-area-total-label {
-            font-size: 11px;
-            color: var(--dj-gray-500);
+        .wo-area-totals-footer .wo-totals-label {
+            text-align: left;
+            font-size: 12px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 2px;
+            color: var(--dj-gray-500);
         }
 
-        .wo-area-total-value {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--dj-gray-800);
-        }
-
-        .wo-area-total-value.is-primary {
+        .wo-area-totals-footer td.wo-col-total {
             color: var(--dj-primary);
+            font-weight: 700;
         }
 
         /* ============================================================
@@ -1942,10 +1952,17 @@
         .wo-hours-hidden .wo-col-prep,
         .wo-hours-hidden .wo-col-working,
         .wo-hours-hidden .wo-col-total,
-        .wo-hours-hidden .wo-area-totals,
+        .wo-hours-hidden .wo-area-totals-footer,
         .wo-hours-hidden .wo-grand-totals,
         .wo-hours-hidden .wo-area-summary {
             display: none !important;
+        }
+
+        /* When hours hidden, Unit and Coats stay right-aligned */
+        .wo-hours-hidden .wo-col-unit,
+        .wo-hours-hidden .wo-col-coats {
+            text-align: right;
+            padding-right: 12px;
         }
 
         /* ============================================================
@@ -3435,22 +3452,19 @@
                                     <td class="wo-col-actions"></td>
                                 </tr>
                             </tbody>
+                            <tfoot class="wo-area-totals-footer">
+                                <tr>
+                                    <td class="wo-col-drag"></td>
+                                    <td class="wo-col-item wo-totals-label">Section Total</td>
+                                    <td class="wo-col-prep wo-area-prep-total">1.25</td>
+                                    <td class="wo-col-working wo-area-working-total">5.45</td>
+                                    <td class="wo-col-total wo-area-total">6.70</td>
+                                    <td class="wo-col-unit"></td>
+                                    <td class="wo-col-coats"></td>
+                                    <td class="wo-col-actions"></td>
+                                </tr>
+                            </tfoot>
                         </table>
-
-                        <div class="wo-area-totals">
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Prep Hours</div>
-                                <div class="wo-area-total-value wo-area-prep-total">1.25</div>
-                            </div>
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Working Hours</div>
-                                <div class="wo-area-total-value wo-area-working-total">5.45</div>
-                            </div>
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Total Hours</div>
-                                <div class="wo-area-total-value is-primary wo-area-total">6.70</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -3622,22 +3636,19 @@
                                     <td class="wo-col-actions"></td>
                                 </tr>
                             </tbody>
+                            <tfoot class="wo-area-totals-footer">
+                                <tr>
+                                    <td class="wo-col-drag"></td>
+                                    <td class="wo-col-item wo-totals-label">Section Total</td>
+                                    <td class="wo-col-prep wo-area-prep-total">1.25</td>
+                                    <td class="wo-col-working wo-area-working-total">4.25</td>
+                                    <td class="wo-col-total wo-area-total">5.50</td>
+                                    <td class="wo-col-unit"></td>
+                                    <td class="wo-col-coats"></td>
+                                    <td class="wo-col-actions"></td>
+                                </tr>
+                            </tfoot>
                         </table>
-
-                        <div class="wo-area-totals">
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Prep Hours</div>
-                                <div class="wo-area-total-value wo-area-prep-total">1.25</div>
-                            </div>
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Working Hours</div>
-                                <div class="wo-area-total-value wo-area-working-total">4.25</div>
-                            </div>
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Total Hours</div>
-                                <div class="wo-area-total-value is-primary wo-area-total">5.50</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -3758,22 +3769,19 @@
                                     <td class="wo-col-actions"></td>
                                 </tr>
                             </tbody>
+                            <tfoot class="wo-area-totals-footer">
+                                <tr>
+                                    <td class="wo-col-drag"></td>
+                                    <td class="wo-col-item wo-totals-label">Section Total</td>
+                                    <td class="wo-col-prep wo-area-prep-total">1.50</td>
+                                    <td class="wo-col-working wo-area-working-total">2.50</td>
+                                    <td class="wo-col-total wo-area-total">4.00</td>
+                                    <td class="wo-col-unit"></td>
+                                    <td class="wo-col-coats"></td>
+                                    <td class="wo-col-actions"></td>
+                                </tr>
+                            </tfoot>
                         </table>
-
-                        <div class="wo-area-totals">
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Prep Hours</div>
-                                <div class="wo-area-total-value wo-area-prep-total">1.50</div>
-                            </div>
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Working Hours</div>
-                                <div class="wo-area-total-value wo-area-working-total">2.50</div>
-                            </div>
-                            <div class="wo-area-total-item">
-                                <div class="wo-area-total-label">Total Hours</div>
-                                <div class="wo-area-total-value is-primary wo-area-total">4.00</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -4807,10 +4815,10 @@
                     }
                 } else if (setting === 'showTotals') {
                     if (isActive) {
-                        $('.wo-grand-totals, .wo-area-totals').show();
+                        $('.wo-grand-totals, .wo-area-totals-footer').show();
                         this.showToast('Totals shown', 'success');
                     } else {
-                        $('.wo-grand-totals, .wo-area-totals').hide();
+                        $('.wo-grand-totals, .wo-area-totals-footer').hide();
                         this.showToast('Totals hidden', 'success');
                     }
                 } else if (setting === 'showProducts') {
