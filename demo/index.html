@@ -2052,11 +2052,6 @@
                 max-width: calc(100% / 5);
             }
 
-            .wo-timeline-track::before,
-            .wo-timeline-fill {
-                display: none;
-            }
-
             /* Mobile: items after the 5th get top padding for visual separation */
             .wo-timeline-track.has-multiple-rows > .wo-milestone:nth-child(n+6),
             .wo-timeline-track.has-multiple-rows > .wo-add-stage-btn:nth-child(n+6) {
@@ -2441,12 +2436,6 @@
         .wo-timeline-fill[data-progress="50"] { width: calc(50% - 12px); }
         .wo-timeline-fill[data-progress="75"] { width: calc(75% - 12px); }
         .wo-timeline-fill[data-progress="100"] { width: calc(100% - 48px); }
-
-        /* Hide progress line when more than 6 stages (wrapping occurs) */
-        .wo-timeline-track.has-multiple-rows::before,
-        .wo-timeline-track.has-multiple-rows .wo-timeline-fill {
-            display: none;
-        }
 
         /* Add subtle separator line between rows when wrapping */
         .wo-timeline-track.has-multiple-rows {
