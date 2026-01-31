@@ -1921,13 +1921,9 @@
 
             .wo-line-item-row {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                grid-template-areas:
-                    "item item"
-                    "prep working"
-                    "total unit"
-                    "coats coats";
-                gap: 12px;
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: auto auto auto;
+                gap: 4px 8px;
                 padding: 16px;
                 border-bottom: 1px solid var(--dj-gray-200);
             }
@@ -1938,36 +1934,40 @@
                 display: block;
             }
 
-            .wo-line-item-row td.wo-col-drag {
+            .wo-line-item-row td.wo-col-drag,
+            .wo-line-item-row td.wo-col-actions {
                 display: none;
             }
 
+            /* Item name spans full width */
             .wo-line-item-row td.wo-col-item {
-                grid-area: item;
+                grid-column: 1 / -1;
+                margin-bottom: 8px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--dj-gray-100);
             }
 
-            .wo-line-item-row td.wo-col-prep {
-                grid-area: prep;
-            }
-
-            .wo-line-item-row td.wo-col-working {
-                grid-area: working;
-            }
-
+            /* Hours row - 3 equal columns */
+            .wo-line-item-row td.wo-col-prep,
+            .wo-line-item-row td.wo-col-working,
             .wo-line-item-row td.wo-col-total {
-                grid-area: total;
+                text-align: center;
+                padding: 8px 4px;
+                background-color: var(--dj-gray-50);
+                border-radius: 4px;
             }
 
+            /* Unit/Coats row - span columns */
             .wo-line-item-row td.wo-col-unit {
-                grid-area: unit;
+                grid-column: 1 / 2;
+                text-align: center;
+                padding-top: 8px;
             }
 
             .wo-line-item-row td.wo-col-coats {
-                grid-area: coats;
-            }
-
-            .wo-line-item-row td.wo-col-actions {
-                display: none;
+                grid-column: 3 / 4;
+                text-align: center;
+                padding-top: 8px;
             }
 
             /* Mobile field labels */
@@ -1978,19 +1978,25 @@
             .wo-line-item-row td.wo-col-coats::before {
                 content: attr(data-label);
                 display: block;
-                font-size: 10px;
+                font-size: 9px;
                 font-weight: 600;
                 color: var(--dj-gray-500);
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 4px;
+                letter-spacing: 0.3px;
+                margin-bottom: 2px;
             }
 
             .wo-field-value {
-                justify-content: flex-start;
-                text-align: left;
+                justify-content: center;
+                text-align: center;
                 padding: 0;
                 min-height: 0;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .wo-line-item-row td.wo-col-total .wo-field-value {
+                color: var(--dj-primary);
             }
 
             /* Section Totals Footer - Mobile */
