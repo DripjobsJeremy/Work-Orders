@@ -2051,13 +2051,24 @@
                 max-width: 20%;
             }
 
-            /* Add Stage button always starts new line on mobile */
+            /* Add Stage button starts new row, aligned left */
             .wo-timeline-track > .wo-add-stage-btn {
+                flex: 0 0 20%;
+                max-width: 20%;
+                margin-right: auto;
+                margin-top: 20px;
+            }
+
+            /* Force line break before Add Stage using full-width pseudo row */
+            .wo-timeline-track::after {
+                content: '';
                 flex: 0 0 100%;
-                max-width: 100%;
-                margin-top: 16px;
-                padding-top: 12px;
-                border-top: 1px dashed var(--dj-gray-200);
+                height: 0;
+                order: 998;
+            }
+
+            .wo-timeline-track > .wo-add-stage-btn {
+                order: 999;
             }
 
             /* Smaller labels on mobile */
@@ -2075,9 +2086,8 @@
 
             /* Mobile: milestones after the 5th get separator */
             .wo-timeline-track > .wo-milestone:nth-child(n+6) {
-                padding-top: 12px;
-                border-top: 1px dashed var(--dj-gray-200);
-                margin-top: -12px;
+                padding-top: 16px;
+                margin-top: 4px;
             }
 
             .wo-dates-flow {
